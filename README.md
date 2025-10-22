@@ -1,8 +1,8 @@
 # Penyuku
 
 Mobile-App Penyuku Developed By:
-[Aulia Ahmad/Gesa](https://github.com/Retiortuk) Lead Programmer
-[Ghaza Zidane](https://github.com/GHAzaZIDANE) As Second Programmer
+- [Aulia Ahmad/Gesa](https://github.com/Retiortuk) Lead Programmer
+- [Ghaza Zidane](https://github.com/GHAzaZIDANE) As Second Programmer
 
 ## Getting Started
 
