@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Stack(
           children: [
             Image.asset(
-              'asset/images/background.png',
+              'assets/images/background.png',
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
@@ -74,13 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           width: 195,
           height: 195,
-          decoration: const BoxDecoration(
+          decoration:  BoxDecoration(
             shape: BoxShape.circle,
             color: Color(0xFF4DA6FF),
           ),
           child: Center(
             child: Image.asset(
-              'asset/images/logo_penyu.png', // pastikan path-nya sesuai
+              'assets/images/logo-penyu.png', // pastikan path-nya sesuai
               width: 130,
               color: Colors.white,
             ),
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
-            fontFamily: 'KronaOne-Regular', // opsional
+            fontFamily: 'Krona-One', // opsional
           ),
         ),
       ],
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 30),
 
-             Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

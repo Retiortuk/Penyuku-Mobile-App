@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_screen.dart'; // pastikan nama dan lokasi file sama
+import 'package:penyuku/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,10 +14,10 @@ class MyApp extends StatelessWidget {
       title: 'Aplikasi Penyu ku',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        fontFamily: 'Poppins', // optional, biar tampilannya halus
+        fontFamily: 'Poppins', 
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(), // Halaman pertama yang dibuka
+      home: const SplashScreen(),
     );
   }
 }

@@ -22,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Stack(
           children: [
             Image.asset(
-              'asset/images/background.png',
+              'assets/images/background.png',
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
@@ -78,7 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           child: Center(
             child: Image.asset(
-              'asset/images/logo_penyu.png', // pastikan path-nya sesuai
+              'assets/images/logo-penyu.png', // pastikan path-nya sesuai
               width: 130,
               color: Colors.white,
             ),
@@ -90,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           style: TextStyle(
             color: Colors.white,
             fontSize: 20,
-            fontFamily: 'KronaOne-Regular', // opsional
+            fontFamily: 'Krona-One', // opsional
           ),
         ),
       ],
@@ -211,7 +211,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 30),
 
-             Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
