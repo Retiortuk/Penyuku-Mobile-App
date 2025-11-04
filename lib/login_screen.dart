@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
             TextFormField(
               controller: _usernameController,
               decoration: InputDecoration(
-                hintText: 'username',
+                hintText: 'Username',
                 prefixIcon: const Icon(
                   Icons.person_outline,
                   color: Colors.grey,
@@ -185,8 +185,13 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: EdgeInsets.only(bottom: 15),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text(
+                    'Belum Punya Akun?',
+                      style: GoogleFonts.poppins(
+                        color: Colors.blue
+                      ),
+                    ),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -197,9 +202,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: Text(
-                      "Belum Punya Akun? Daftar Akun",
+                      " Daftar Akun",
                       style: GoogleFonts.poppins(
                         color: Colors.blue,
+                        fontWeight: FontWeight.bold,
                         
                       ),
                     ),

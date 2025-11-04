@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterScreen extends StatefulWidget { 
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
@@ -11,6 +11,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordVisible = false;
 
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -121,9 +122,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              controller: _usernameController,
+              controller: _emailController,
               decoration: InputDecoration(
-                hintText: 'email',
+                hintText: 'Email',
                 prefixIcon: const Icon(
                   Icons.person_outline,
                   color: Colors.grey,
@@ -154,7 +155,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _usernameController,
               decoration: InputDecoration(
-                hintText: 'username',
+                hintText: 'Username',
                 prefixIcon: const Icon(
                   Icons.person_outline,
                   color: Colors.grey,
@@ -214,20 +215,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Padding(
               padding: EdgeInsets.only(bottom: 15),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text(
+                    "Sudah Memiliki Akun?",
+                    style: GoogleFonts.poppins(color: Colors.blue),
+                  ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                     },
                     child: Text(
-                    "Sudah Memiliki Akun? Masuk",
+                      " Masuk",
                       style: GoogleFonts.poppins(
                         color: Colors.blue,
-                        
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),  
+                  ),
                 ],
               ),
             ),

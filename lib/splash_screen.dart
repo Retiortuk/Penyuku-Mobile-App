@@ -59,13 +59,6 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
 
           _buildCircle(
-            size: 80,
-            color: Colors.white.withOpacity(0.75),
-            top: 525, 
-            left: 120, 
-          ),
-
-          _buildCircle(
             size: 225,
             color: Colors.white.withOpacity(0.75),
             bottom: -100,
