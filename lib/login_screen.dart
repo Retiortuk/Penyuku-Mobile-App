@@ -177,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           _rememberMe = newValue!;
                         });
                       },
-                      activeColor: const Color(0xFF007BFF),
+                      activeColor: const Color.fromARGB(255, 65, 97, 145),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                       ),
