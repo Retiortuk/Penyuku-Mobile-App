@@ -12,8 +12,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordVisible = false;
 
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _userNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,16 +24,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Stack(
           children: [
             Image.asset(
-              'assets/images/background.png',
+              'assets/images/login_background.png',
               width: double.infinity,
               height: double.infinity,
               fit: BoxFit.cover,
             ),
-            // Lingkaran-lingkaran putih dekoratif di background
-            Positioned(top: -80, left: -40, child: _buildCircle(180)),
-            Positioned(top: 100, right: -60, child: _buildCircle(120)),
-            Positioned(bottom: 100, left: -70, child: _buildCircle(150)),
-            Positioned(bottom: -60, right: -30, child: _buildCircle(160)),
 
             // Konten utama
             Center(
@@ -41,7 +37,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildLogo(),
                     const SizedBox(height: 40),
                     _buildLoginCard(context),
                   ],
@@ -54,69 +49,125 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // Lingkaran putih background
-  Widget _buildCircle(double size) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.8),
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-
-  // Logo Penyu
-  Widget _buildLogo() {
-    return Column(
-      children: [
-        Container(
-          width: 195,
-          height: 195,
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Color(0xFF4DA6FF),
-          ),
-          child: Center(
-            child: Image.asset(
-              'assets/images/logo-penyu.png', // pastikan path-nya sesuai
-              width: 130,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          "Penyu ku.",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontFamily: 'Krona-One', // opsional
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Form Register di dalam card putih
+  // Form login di dalam card putih
   Widget _buildLoginCard(BuildContext context) {
     return Card(
       elevation: 10,
       shadowColor: Colors.black26,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
+
+            Align(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                iconSize: 35.0,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+            const SizedBox(height: 20.0,),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Opacity(
+                opacity: 0.4,
+                child: Text(
+                  "Welcome To Penyu Ku.",
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ShaderMask(
+                shaderCallback: (bounds) => const LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 16, 31, 53),
+                    Color.fromARGB(255, 65, 97, 145),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [0.0, 1.0],
+                ).createShader(bounds),
+                child: Text(
+                  "Create an Account",
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+
             // Email
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Email",
-                style: GoogleFonts.poppins(
-                  color: Colors.blue.shade700,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+              child: Opacity(
+                opacity: 0.4,
+                child: Text(
+                  "Name",
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[100],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
+
+            // Username
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Opacity(
+                opacity: 0.4,
+                child: Text(
+                  "Username",
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _userNameController,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.grey[100],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
+
+            // Email
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Opacity(
+                opacity: 0.4,
+                child: Text(
+                  "Email",
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
                 ),
               ),
             ),
@@ -124,61 +175,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                hintText: 'Email',
-                prefixIcon: const Icon(
-                  Icons.person_outline,
-                  color: Colors.grey,
-                ),
                 filled: true,
                 fillColor: Colors.grey[100],
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: Colors.grey.shade300),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
-
-            // Username
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Username",
-                style: GoogleFonts.poppins(
-                  color: Colors.blue.shade700,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _usernameController,
-              decoration: InputDecoration(
-                hintText: 'Username',
-                prefixIcon: const Icon(
-                  Icons.person_outline,
-                  color: Colors.grey,
-                ),
-                filled: true,
-                fillColor: Colors.grey[100],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 15),
 
             // Password
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Password",
-                style: GoogleFonts.poppins(
-                  color: Colors.blue.shade700,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
+              child: Opacity(
+                opacity: 0.4,
+                child: Text(
+                  "Password",
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
                 ),
               ),
             ),
@@ -187,8 +201,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               controller: _passwordController,
               obscureText: !_isPasswordVisible,
               decoration: InputDecoration(
-                hintText: '********',
-                prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _isPasswordVisible
@@ -205,62 +217,79 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 filled: true,
                 fillColor: Colors.grey[100],
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: Colors.grey.shade300),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
+
+            // Tombol Regis
+            Padding(
+              padding: EdgeInsetsGeometry.only(bottom: 15),
+              child: SizedBox(
+                width: 135.0,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    print("Register attempt: $email | $password");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 3,
+                  ),
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color.fromARGB(255, 16, 31, 53),
+                          Color.fromARGB(255, 65, 97, 145),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Register",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
             Padding(
               padding: EdgeInsets.only(bottom: 15),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Sudah Memiliki Akun?",
-                    style: GoogleFonts.poppins(color: Colors.blue),
+                    "Already Have an Account ?",
+                    style: GoogleFonts.poppins(color: Colors.black),
                   ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      " Masuk",
+                      " Login",
                       style: GoogleFonts.poppins(
-                        color: Colors.blue,
+                        color: Colors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
-              ),
-            ),
-
-            // Tombol Register
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  final username = _usernameController.text;
-                  final password = _passwordController.text;
-                  print("Register attempt: $username | $password");
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF007BFF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 3,
-                ),
-                child: Text(
-                  "Register",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
             ),
           ],

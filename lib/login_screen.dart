@@ -13,7 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
 
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 8),
             TextFormField(
-              controller: _usernameController,
+              controller: _emailController,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[100],
@@ -203,13 +203,13 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: EdgeInsetsGeometry.only(bottom: 15),
               child: SizedBox(
-                width: 115.0,
-                height: 38,
+                width: 135.0,
+                height: 48,
                 child: ElevatedButton(
                   onPressed: () {
-                    final username = _usernameController.text;
+                    final email = _emailController.text;
                     final password = _passwordController.text;
-                    print("Login attempt: $username | $password");
+                    print("Login attempt: $email | $password");
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
