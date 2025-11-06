@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/images/background.png', fit: BoxFit.cover),
+          Image.asset('assets/images/splash_screen_background.png', fit: BoxFit.cover),
 
           _buildCircle(
             size: 225,
