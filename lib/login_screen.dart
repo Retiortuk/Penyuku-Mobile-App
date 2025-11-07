@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'register_screen.dart';
+import 'dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -79,17 +80,12 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ShaderMask(
                 shaderCallback: (bounds) => const LinearGradient(
                   colors: [
-                    Color.fromARGB(
-                      255,
-                      16,
-                      31,
-                      53,
-                    ), 
+                    Color.fromARGB(255, 16, 31, 53),
                     Color.fromARGB(255, 65, 97, 145),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  stops: [0.0, 1.0]
+                  stops: [0.0, 1.0],
                 ).createShader(bounds),
                 child: Text(
                   "Login into your \nAccount",
@@ -210,6 +206,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     final email = _emailController.text;
                     final password = _passwordController.text;
                     print("Login attempt: $email | $password");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DashboardScreen(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -218,13 +220,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     elevation: 3,
                   ),
-                  child: Ink( // Gunakan Ink untuk ripple effect di atas gradient
+                  child: Ink(
+                    // Gunakan Ink untuk ripple effect di atas gradient
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
-                          Color.fromARGB(255,16,31,53,), 
+                          Color.fromARGB(255, 16, 31, 53),
                           Color.fromARGB(255, 65, 97, 145),
-                        ]
+                        ],
                       ),
                       borderRadius: BorderRadius.circular(15),
                     ),

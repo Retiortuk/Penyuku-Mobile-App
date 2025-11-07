@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -59,7 +60,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-
             Align(
               alignment: Alignment.centerLeft,
               child: IconButton(
@@ -70,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 20.0,),
+            const SizedBox(height: 20.0),
             Align(
               alignment: Alignment.centerLeft,
               child: Opacity(
@@ -235,6 +235,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     final email = _emailController.text;
                     final password = _passwordController.text;
                     print("Register attempt: $email | $password");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
