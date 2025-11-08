@@ -4,6 +4,7 @@ import 'package:penyuku/aboutUs_screen.dart';
 import 'package:penyuku/laporan_screen.dart';
 import 'pencatatan_screen.dart';
 import 'edukasi_screen.dart';
+import 'komunitas_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -84,12 +85,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
 
       // Komunitas
-      Center(
-        child: Text(
-          'Komunitas',
-          style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
+      const KomunitasScreen(),
 
       // Profile
       Center(
