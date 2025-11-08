@@ -221,7 +221,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     elevation: 3,
                   ),
                   child: Ink(
-                    // Gunakan Ink untuk ripple effect di atas gradient
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
                         colors: [
