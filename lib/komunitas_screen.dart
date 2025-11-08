@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:penyuku/edukasi_detail_screen.dart'; // Import jika card mau di-tap
+import 'komunitas_overview.dart';
 
 class KomunitasCardData {
   final String title;
   final String subtitle;
-  final String imageUrl;
+  final String headerImageUrl;
+  final String description;
+  final List<String> galleryImages;
+  final String buttonText;
 
   KomunitasCardData({
     required this.title,
     required this.subtitle,
-    required this.imageUrl,
+    required this.headerImageUrl,
+    required this.description,
+    required this.galleryImages,
+    required this.buttonText,
   });
 }
 
@@ -26,17 +32,40 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
     KomunitasCardData(
       title: 'Galeri Aksi Komunitas',
       subtitle: '"bukti" kalau komunitas ini beneran ada dan seru.',
-      imageUrl: 'assets/images/galeri-aksi-komunitas.png', // Ganti dengan path aset Anda
+      headerImageUrl: 'assets/images/galeri-aksi-komunitas.png',
+      description: 'Mulai Berperan Penting Dalam Penyelamatan Penyu, Dengan Menjadi Salah Satu Komunitas Dari Penyuku Klik "Gabung Komunitas Untuk Bergabung".',
+      galleryImages: [
+        'assets/images/galeri-komunitas.png',
+        'assets/images/galeri-komunitas2.png.jpg',
+        'assets/images/galeri-komunitas3.jpg',
+      ],
+      buttonText: 'Gabung Komunitas',
     ),
     KomunitasCardData(
       title: 'Jadi Relawan Inti',
       subtitle: 'Naik Level: Jadi Relawan Inti',
-      imageUrl: 'assets/images/jadi-relawan-inti.png', // Ganti dengan path aset Anda
+      headerImageUrl: 'assets/images/jadi-relawan-inti.png',
+      description:
+          'Naik level dan jadilah relawan inti! Anda akan belajar cara menangani telur, merawat tukik, dan berpartisipasi langsung dalam aksi pelestarian yang lebih mendalam.',
+      galleryImages: [
+        'assets/images/relawan-inti-1.png',
+        'assets/images/relawan-inti-2.jpeg',
+        'assets/images/relawan-inti-3.jpeg',
+      ],
+      buttonText: 'Daftar Jadi Relawan',
     ),
     KomunitasCardData(
       title: 'Turun Tangan',
       subtitle: 'Kalender Aksi Kita',
-      imageUrl: 'assets/images/turun-tangan.png', // Ganti dengan path aset Anda
+      headerImageUrl: 'assets/images/turun-tangan.png',
+      description:
+          'Lihat jadwal aksi bersih-bersih pantai, pelepasan tukik, dan edukasi yang akan datang. Kehadiranmu sangat berarti bagi kami dan para penyu!',
+      galleryImages: [
+        'assets/images/turun-tangan-1.png',
+        'assets/images/turun-tangan-2.jpg',
+        'assets/images/turun-tangan-3.jpg',
+      ],
+      buttonText: 'Lihat Kalender Aksi',
     ),
   ];
 
@@ -100,7 +129,6 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-
               Column(
                 children: _cardList.map((data) {
                   return _buildKomunitasCard(data);
@@ -119,11 +147,12 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       child: GestureDetector(
         onTap: () {
-          // TODO: Arahkan ke halaman detail yang sesuai
-          // Contoh:
-          // Navigator.push(context, MaterialPageRoute(
-          //   builder: (context) => EdukasiDetailScreen(item: ...),
-          // ));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventOverviewScreen(eventData: data),
+            ),
+          );
         },
         child: Card(
           elevation: 5,
@@ -131,21 +160,26 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          clipBehavior: Clip.antiAlias, 
+          clipBehavior: Clip.antiAlias,
           child: Stack(
             children: [
               Ink.image(
                 height: 180,
                 width: double.infinity,
-                image: AssetImage(data.imageUrl), 
+                image: AssetImage(data.headerImageUrl),
                 fit: BoxFit.cover,
                 child: InkWell(
                   onTap: () {
-                     /* Aksi tap pada gambar jika perlu */
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EventOverviewScreen(eventData: data),
+                      ),
+                    );
                   },
                 ),
               ),
-
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -162,7 +196,6 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
                   ),
                 ),
               ),
-
               Positioned(
                 top: 16,
                 left: 16,
@@ -177,7 +210,7 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         shadows: [
-                          const Shadow(blurRadius: 5.0, color: Colors.black54)
+                          const Shadow(blurRadius: 5.0, color: Colors.black54),
                         ],
                       ),
                     ),
@@ -191,13 +224,14 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
                   ],
                 ),
               ),
-
               Positioned(
                 bottom: 12,
                 right: 12,
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 6.0,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(20.0),
