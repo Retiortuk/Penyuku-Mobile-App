@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/laporan_screen.dart';
 import 'pencatatan_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -341,8 +342,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Icons.description_outlined,
             "Laporan",
             onTap: () {
-              // TODO Navigate to Laporan Page
-              print("laporan Tapped");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const LaporanScreen(),
+                ),
+              );
             },
           ),
           _buildActionButton(
