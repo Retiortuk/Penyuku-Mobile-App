@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/laporanOverview_screen.dart';
 
 class Laporan {
   final String id;
@@ -93,12 +94,12 @@ class _LaporanScreenState extends State<LaporanScreen> {
       padding: const EdgeInsets.only(top: 50.0, left: 16.0),
       child: Material(
         color: _darkBlue,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
         elevation: 4,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(24),
           onTap: () {
-            Navigator.of(context).pop(); 
+            Navigator.of(context).pop();
           },
           child: Container(
             width: 50,
@@ -126,7 +127,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
           const SizedBox(width: 16),
           Expanded(
             child: _buildSummaryCard(
-              icon: Icons.egg_outlined, 
+              icon: Icons.egg_outlined,
               title: "Total Tukik",
               count: 97,
             ),
@@ -136,8 +137,11 @@ class _LaporanScreenState extends State<LaporanScreen> {
     );
   }
 
-  Widget _buildSummaryCard(
-      {required IconData icon, required String title, required int count}) {
+  Widget _buildSummaryCard({
+    required IconData icon,
+    required String title,
+    required int count,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -171,7 +175,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -207,14 +211,18 @@ class _LaporanScreenState extends State<LaporanScreen> {
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: InkWell(
         onTap: () {
-          // TODO: Tambahkan navigasi ke detail laporan
-          print("Tapped on ${laporan.id}");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LaporanOverviewScreen(),
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(15),
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey[200], 
+            color: Colors.grey[200],
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -268,10 +276,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                   ),
                   Text(
                     laporan.tanggal,
-                    style: GoogleFonts.poppins(
-                      color: _darkBlue,
-                      fontSize: 12,
-                    ),
+                    style: GoogleFonts.poppins(color: _darkBlue, fontSize: 12),
                   ),
                 ],
               ),

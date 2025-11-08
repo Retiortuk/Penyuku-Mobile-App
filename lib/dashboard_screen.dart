@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/aboutUs_screen.dart';
 import 'package:penyuku/laporan_screen.dart';
 import 'pencatatan_screen.dart';
+import 'edukasi_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -50,8 +52,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 25, 44, 71),
                   borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(12.0), // Disesuaikan dari 24
-                    bottomRight: Radius.circular(12.0), // Disesuaikan dari 24
+                    bottomLeft: Radius.circular(24.0), // Disesuaikan dari 24
+                    bottomRight: Radius.circular(24.0), // Disesuaikan dari 24
                   ),
                 ),
                 child: Image.asset(
@@ -142,7 +144,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Color.fromARGB(255, 25, 44, 71),
                 ),
               ),
               Icon(Icons.notifications_none, color: Colors.grey[700]),
@@ -344,9 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const LaporanScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => const LaporanScreen()),
               );
             },
           ),
@@ -392,107 +392,134 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildWelcomeCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 25, 44, 71),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Selamat datang di Penangkaran Penyu Cilacap",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Bersama melestarikan penyu untuk generasi\nmendatang bersama Penangkaran Nagaraja", // Teks diganti
-                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 10.0,
-                  runSpacing: 4.0,
-                  children: [
-                    Chip(
-                      label: Text(
-                        'Tentang Penangkaran',
-                        style: GoogleFonts.poppins(fontSize: 11),
-                      ),
-                      padding: EdgeInsets.all(8.0),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AboutusScreen()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 25, 44, 71),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Selamat datang di Penangkaran Penyu Cilacap",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Bersama melestarikan penyu untuk generasi\nmendatang bersama Penangkaran Nagaraja", // Teks diganti
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 10.0,
+                    runSpacing: 4.0,
+                    children: [
+                      Chip(
+                        label: Text(
+                          'Tentang Penangkaran',
+                          style: GoogleFonts.poppins(fontSize: 11),
+                        ),
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          Image.asset(
-            'assets/images/logo-penyu.png',
-            height: 70,
-            color: Colors.white,
-          ),
-        ],
+            Image.asset(
+              'assets/images/logo-penyu.png',
+              height: 70,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildEduCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 25, 44, 71),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Penyu Terbesar di Dunia!",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Tahukah Kamu Bahwa Penyu Madura Adalah Penyu Terbesar di Dunia dan Suka Berkelana Jauh Dari Selat Jawa Hingga Australia, Yuk Belajar!",
-                  style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 10.0,
-                  runSpacing: 4.0,
-                  children: [
-                    Chip(
-                      label: Text(
-                        'Pelajari Penyu Madura',
-                        style: GoogleFonts.poppins(fontSize: 11),
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                    ),
-                  ],
-                ),
-              ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EdukasiDetailScreen(
+              // Menggunakan dummyData dari EdukasiDetailScreen
+              item: EdukasiDetailScreen.dummyData,
             ),
           ),
-          Image.asset(
-            'assets/images/logo-penyu.png',
-            height: 70,
-            color: Colors.white,
-          ),
-        ],
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 25, 44, 71),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Penyu Terbesar di Dunia!",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "Tahukah Kamu Bahwa Penyu Madura Adalah Penyu Terbesar di Dunia dan Suka Berkelana Jauh Dari Selat Jawa Hingga Australia, Yuk Belajar!",
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 10.0,
+                    runSpacing: 4.0,
+                    children: [
+                      Chip(
+                        label: Text(
+                          'Pelajari Penyu Madura',
+                          style: GoogleFonts.poppins(fontSize: 11),
+                        ),
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Image.asset(
+              'assets/images/logo-penyu.png',
+              height: 70,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
