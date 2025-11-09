@@ -143,10 +143,10 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
       padding: EdgeInsetsGeometry.only(top: 50.0, left: 16.0),
       child: Material(
         color: const Color.fromARGB(255, 25, 44, 71),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(24),
         elevation: 4,
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(24),
           onTap: () {
             Navigator.of(context).pop(); // Aksi untuk kembali
           },
@@ -308,7 +308,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
           backgroundColor: const Color.fromARGB(255, 25, 44, 71),
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(15),
           ),
           elevation: 4,
         ),
@@ -316,7 +316,6 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
           "Unggah data",
           style: GoogleFonts.poppins(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),

@@ -1,14 +1,117 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/komunitas_screen.dart'; 
+import 'package:penyuku/komunitas_screen.dart';
 
-class EventOverviewScreen extends StatelessWidget {
+class EventOverviewScreen extends StatefulWidget {
   final KomunitasCardData eventData;
 
-  const EventOverviewScreen({
-    super.key,
-    required this.eventData,
-  });
+  const EventOverviewScreen({super.key, required this.eventData});
+
+  @override
+  State<EventOverviewScreen> createState() => _EventOverviewScreenState();
+}
+
+class _EventOverviewScreenState extends State<EventOverviewScreen> {
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text(
+            "Konfirmasi",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 25, 44, 71),
+            ),
+          ),
+          content: Text(
+            "Apakah Anda yakin dengan aksi ini?",
+            style: GoogleFonts.poppins(),
+          ),
+          actions: [
+            Container(
+              height: 1,
+              color: Colors.grey[300],
+              margin: const EdgeInsets.only(top: 20),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                    child: Text(
+                      "Tidak",
+                      style: GoogleFonts.poppins(color: Colors.redAccent),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
+                  ),
+                ),
+                Container(width: 1, height: 48, color: Colors.grey[300]),
+                Expanded(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                    child: Text(
+                      "Iya",
+                      style: GoogleFonts.poppins(
+                        color: const Color.fromARGB(255, 25, 44, 71),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                      _handleDataUpload();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleDataUpload() {
+    print("Berhasil Di Ajukan!");
+
+    String message = 'Permintaan berhasil diajukan!';
+    if (widget.eventData.title == 'Galeri Aksi Komunitas') {
+      message = 'Permintaan Gabung Komunitas Berhasil Diajukan!';
+    } else if (widget.eventData.title == 'Jadi Relawan Inti') {
+      message = 'Permintaan Jadi Relawan Berhasil Diajukan!';
+    } else if (widget.eventData.title == 'Turun Tangan') {
+      message = 'Pengajuan Turun Tangan Berhasil Diajukan';
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
+        duration: Duration(seconds: 4),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+    );
+  }
 
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
   final Color _greyText = const Color(0xFF555555);
@@ -18,7 +121,7 @@ class EventOverviewScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
-        clipBehavior: Clip.none, 
+        clipBehavior: Clip.none,
         children: [
           CustomScrollView(
             clipBehavior: Clip.none,
@@ -26,20 +129,20 @@ class EventOverviewScreen extends StatelessWidget {
               SliverAppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
-                automaticallyImplyLeading: false, 
-                expandedHeight: 300, 
+                automaticallyImplyLeading: false,
+                expandedHeight: 300,
                 stretch: true,
                 flexibleSpace: FlexibleSpaceBar(
                   stretchModes: const [StretchMode.zoomBackground],
                   background: Image.asset(
-                    eventData.headerImageUrl, 
+                    widget.eventData.headerImageUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
 
               SliverToBoxAdapter(
-                child: _buildContentSheet(context, eventData),
+                child: _buildContentSheet(context, widget.eventData),
               ),
             ],
           ),
@@ -91,7 +194,6 @@ class EventOverviewScreen extends StatelessWidget {
               transform: Matrix4.translationValues(0.0, -40.0, 0.0),
               height: 45,
               width: MediaQuery.of(context).size.width * 0.85,
-              
             ),
           ),
 
@@ -101,7 +203,7 @@ class EventOverviewScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data.title, 
+                  data.title,
                   style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -111,7 +213,7 @@ class EventOverviewScreen extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 Text(
-                  data.description, 
+                  data.description,
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: _greyText,
@@ -120,7 +222,7 @@ class EventOverviewScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 Container(
-                  height: 120, 
+                  height: 120,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: data.galleryImages.length,
@@ -143,8 +245,7 @@ class EventOverviewScreen extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: Tambahkan logika untuk gabung komunitas
-                    print("Tombol ${data.buttonText} ditekan!");
+                    _showConfirmationDialog();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _darkBlue,
@@ -155,10 +256,9 @@ class EventOverviewScreen extends StatelessWidget {
                     elevation: 4,
                   ),
                   child: Text(
-                    data.buttonText, 
+                    data.buttonText,
                     style: GoogleFonts.poppins(
                       color: Colors.white,
-                      fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),

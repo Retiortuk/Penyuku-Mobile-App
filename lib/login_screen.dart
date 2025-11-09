@@ -187,10 +187,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                Text(
-                  "Forgot Password?",
-                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
-                ),
+                // Text(
+                //   "Forgot Password?",
+                //   style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
+                // ),
               ],
             ),
             const SizedBox(height: 40),

@@ -165,7 +165,7 @@ class LaporanOverviewScreen extends StatelessWidget {
           backgroundColor: _darkBlue,
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(15),
           ),
           elevation: 4,
         ),
@@ -173,7 +173,6 @@ class LaporanOverviewScreen extends StatelessWidget {
           "Unduh Laporan PDF",
           style: GoogleFonts.poppins(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),

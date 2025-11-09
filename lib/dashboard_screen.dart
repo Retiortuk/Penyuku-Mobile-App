@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:penyuku/aboutUs_screen.dart';
 import 'package:penyuku/laporan_screen.dart';
+import 'package:penyuku/statistik_screen.dart';
 import 'pencatatan_screen.dart';
 import 'edukasi_screen.dart';
 import 'komunitas_screen.dart';
@@ -165,9 +166,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(16),
                   image: const DecorationImage(
-                    image: NetworkImage(
-                      'assets/images/penyu-tentang.jpg',
-                    ), // Pastikan ini URL atau aset lokal
+                    image: NetworkImage('assets/images/penyu-tentang.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -176,16 +175,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      "Penyu Berkelana Jauh?\nYuk Pelajari Penyu Madura", // Teks diganti
+                      "Penyu Berkelana Jauh?\nYuk Pelajari Penyu Madura",
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                         shadows: [
-                          Shadow(
-                            blurRadius: 10.0,
-                            color: Colors.black87,
-                          ), // Shadow diganti
+                          Shadow(blurRadius: 10.0, color: Colors.black87),
                         ],
                       ),
                     ),
@@ -249,7 +245,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 25, 44, 71), // Warna disamakan
+        color: const Color.fromARGB(255, 25, 44, 71),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -350,8 +346,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Icons.stacked_line_chart_sharp,
             "Statistik",
             onTap: () {
-              // TODO navigate to statistik
-              print("Statistik tapped");
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => StatistikScreen()),
+              );
             },
           ),
         ],

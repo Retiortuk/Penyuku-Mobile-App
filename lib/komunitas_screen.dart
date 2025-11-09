@@ -65,7 +65,7 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
         'assets/images/turun-tangan-2.jpg',
         'assets/images/turun-tangan-3.jpg',
       ],
-      buttonText: 'Lihat Kalender Aksi',
+      buttonText: 'Ajukan Turun Tangan',
     ),
   ];
 
