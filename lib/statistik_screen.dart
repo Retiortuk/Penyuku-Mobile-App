@@ -14,8 +14,6 @@ class _StatistikScreenState extends State<StatistikScreen> {
 
   final Color _redAccent = const Color(0xFFE74C3C);
 
-  final Color _greyBorder = const Color(0xFFE0E0E0);
-
   final Color _lightGreyBg = const Color(0xFFF7F8FA);
 
   @override
@@ -44,13 +42,13 @@ class _StatistikScreenState extends State<StatistikScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0, left: 16.0),
+      padding: const EdgeInsets.only(top: 15.0, left: 16.0),
       child: Material(
         color: _darkBlue,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(24),
         elevation: 4,
         child: InkWell(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(24),
           onTap: () => Navigator.of(context).pop(),
           child: Container(
             width: 50,

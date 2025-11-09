@@ -140,7 +140,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.only(top: 50.0, left: 16.0),
+      padding: EdgeInsetsGeometry.only(top: 15.0, left: 16.0),
       child: Material(
         color: const Color.fromARGB(255, 25, 44, 71),
         borderRadius: BorderRadius.circular(24),

@@ -156,7 +156,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
   Widget _buildBackButton(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.only(top: 10.0, left: 16.0),
+        padding: const EdgeInsets.only(top: 15.0, left: 16.0),
         child: Material(
           color: _darkBlue.withOpacity(0.8),
           borderRadius: BorderRadius.circular(15),
