@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 32,
+                    fontSize: 24,
                   ),
                 ),
               ),
@@ -117,7 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 opacity: 0.4,
                 child: Text(
                   "Name",
-                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                 ),
               ),
             ),
@@ -127,6 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -142,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 opacity: 0.4,
                 child: Text(
                   "Username",
-                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                 ),
               ),
             ),
@@ -152,6 +153,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -167,7 +169,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 opacity: 0.4,
                 child: Text(
                   "Email",
-                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                 ),
               ),
             ),
@@ -177,6 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -192,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 opacity: 0.4,
                 child: Text(
                   "Password",
-                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                 ),
               ),
             ),
@@ -216,6 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 filled: true,
                 fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -265,7 +269,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         "Register",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: 15,
                         ),
                       ),
                     ),
@@ -281,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Text(
                     "Already Have an Account ?",
-                    style: GoogleFonts.poppins(color: Colors.black),
+                    style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -292,6 +296,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       style: GoogleFonts.poppins(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
+                        fontSize: 12
                       ),
                     ),
                   ),

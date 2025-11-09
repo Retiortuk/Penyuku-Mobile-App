@@ -140,7 +140,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.only(top: 15.0, left: 16.0),
+      padding: EdgeInsetsGeometry.only(top: 50.0, left: 16.0),
       child: Material(
         color: const Color.fromARGB(255, 25, 44, 71),
         borderRadius: BorderRadius.circular(24),
@@ -256,7 +256,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
                 style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 14,
+                  fontSize: 12,
                 ),
               ),
               const SizedBox(height: 8),
@@ -270,6 +270,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
                   style: GoogleFonts.poppins(
                     color: Color.fromARGB(255, 25, 44, 71),
                     fontWeight: FontWeight.bold,
+                    fontSize: 12,
                   ),
                 ),
                 onPressed: () {
@@ -316,7 +317,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
           "Unggah data",
           style: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 16,
+            fontSize: 12,
           ),
         ),
       ),
@@ -339,7 +340,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 12,
           ),
         ),
         const SizedBox(height: 8),
@@ -349,9 +350,10 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
           style: GoogleFonts.poppins(color: Colors.black),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.poppins(color: Colors.grey[600]),
+            hintStyle: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 12),
             filled: true,
             fillColor: Colors.grey[200],
+            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide.none,

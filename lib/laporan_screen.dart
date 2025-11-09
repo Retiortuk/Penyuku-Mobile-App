@@ -57,7 +57,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
     ),
     Laporan(
       id: '#239491',
-      nama: 'Penyu Tulang Lunak',
+      nama: 'Penyu Wibu',
       tanggal: '23/05/2025',
       imageUrl: 'assets/images/penyu-tentang.jpg',
     ),
@@ -91,7 +91,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0, left: 16.0),
+      padding: const EdgeInsets.only(top: 50.0, left: 16.0),
       child: Material(
         color: _darkBlue,
         borderRadius: BorderRadius.circular(24),
@@ -114,7 +114,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
 
   Widget _buildSummaryCards() {
     return Padding(
-      padding: const EdgeInsets.only(top: 24, left: 16, right: 16),
+      padding: const EdgeInsets.only(top: 24, left: 14, right: 14),
       child: Row(
         children: [
           Expanded(
@@ -170,7 +170,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                 count.toString(),
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -188,7 +188,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
         "Laporan",
         style: GoogleFonts.poppins(
           color: _darkBlue,
-          fontSize: 24,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -230,7 +230,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
               CircleAvatar(
                 radius: 25,
                 backgroundColor: Colors.grey[300],
-                backgroundImage: NetworkImage(laporan.imageUrl),
+                backgroundImage: AssetImage(laporan.imageUrl),
               ),
               const SizedBox(width: 16),
 
@@ -242,7 +242,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                       laporan.nama,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 12,
                       ),
                     ),
                     Text(

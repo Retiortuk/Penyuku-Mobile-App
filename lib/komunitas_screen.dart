@@ -78,29 +78,32 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
         SliverAppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          pinned: true,
+          pinned: false,
           automaticallyImplyLeading: false,
           toolbarHeight: 80,
-          flexibleSpace: FlexibleSpaceBar(
-            titlePadding: EdgeInsets.zero,
-            centerTitle: true,
-            title: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-              decoration: BoxDecoration(
-                color: _darkBlue,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(24.0),
-                  bottomRight: Radius.circular(24.0),
+          flexibleSpace: SafeArea(
+              child: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.zero,
+              centerTitle: true,
+              title: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                decoration: BoxDecoration(
+                  color: _darkBlue,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(24.0),
+                    bottomRight: Radius.circular(24.0),
+                  ),
+                ),
+                child: Image.asset(
+                  'assets/images/logo-penyu.png',
+                  height: 50,
+                  color: Colors.white,
                 ),
               ),
-              child: Image.asset(
-                'assets/images/logo-penyu.png',
-                height: 50,
-                color: Colors.white,
-              ),
             ),
-          ),
+          )
+          
         ),
 
         SliverToBoxAdapter(
@@ -123,7 +126,7 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
                 child: Text(
                   'Selamat Datang, Pahlawan Penyu!',
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -217,7 +220,7 @@ class _KomunitasScreenState extends State<KomunitasScreen> {
                     Text(
                       data.subtitle,
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.white.withOpacity(0.9),
                       ),
                     ),

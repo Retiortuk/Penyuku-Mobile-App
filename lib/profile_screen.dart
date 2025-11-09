@@ -22,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 80),
             Center(child: _buildProfileHeader()),
             const SizedBox(height: 24),
             _buildStatsCard(),
@@ -133,7 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Text(
           value,
           style: GoogleFonts.poppins(
-            fontSize: 16,
+            fontSize: 12,
             color: _darkBlue,
             fontWeight: FontWeight.bold,
           ),
@@ -144,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildTentangSaya() {
     const String aboutText =
-        "Saya adalah Kevin, seorang penangkar penyu yang berdomisili di Cilacap. Sejak lama saya memiliki kecintaan terhadap laut dan satwa yang hidup di dalamnya, terutama penyu yang kini semakin langka. Dari rasa peduli itu, saya memutuskan\n\nuntuk mendirikan penangkaran penyu dengan tujuan melestarikan spesies ini sekaligus memberikan edukasi kepada masyarakat tentang pentingnya menjaga ekosistem laut. Setiap hari saya merawat telur, mengawasi proses penetasan, hingga melepaskan tukik ke laut lepas.";
+        "Saya adalah Kevin, seorang penangkar penyu yang berdomisili di Cilacap. Sejak lama saya memiliki kecintaan terhadap laut dan satwa yang hidup di dalamnya, terutama penyu yang kini semakin langka. Dari rasa peduli itu, saya memutuskan\n \nuntuk mendirikan penangkaran penyu dengan tujuan melestarikan spesies ini sekaligus memberikan edukasi kepada masyarakat tentang pentingnya menjaga ekosistem laut. Setiap hari saya merawat telur, mengawasi proses penetasan, hingga melepaskan tukik ke laut lepas.";
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -154,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             "Tentang Saya",
             style: GoogleFonts.poppins(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.bold,
               color: _darkBlue,
             ),
@@ -163,7 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Text(
             aboutText,
             style: GoogleFonts.poppins(
-              fontSize: 14,
+              fontSize: 12,
               color: _greyText,
               height: 1.6, 
             ),

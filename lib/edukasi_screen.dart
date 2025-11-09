@@ -75,7 +75,7 @@ class EdukasiDetailScreen extends StatelessWidget {
       height: 350, 
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: NetworkImage(imageUrl),
+          image: AssetImage(imageUrl),
           fit: BoxFit.cover,
           alignment: Alignment.center,
         ),
@@ -156,7 +156,7 @@ class EdukasiDetailScreen extends StatelessWidget {
                 Text(
                   item.title,
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: _darkBlue,
                   ),
@@ -172,7 +172,7 @@ class EdukasiDetailScreen extends StatelessWidget {
                     Text(
                       "Asal: ${item.origin}",
                       style: GoogleFonts.poppins(
-                        fontSize: 14,
+                        fontSize: 12,
                         color: Colors.grey[700],
                         fontWeight: FontWeight.w500,
                       ),
@@ -183,7 +183,7 @@ class EdukasiDetailScreen extends StatelessWidget {
                 Text(
                   item.description,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: _greyText,
                     height: 1.6,
                   ),
@@ -192,7 +192,7 @@ class EdukasiDetailScreen extends StatelessWidget {
                 Text(
                   "Habitat",
                   style: GoogleFonts.poppins(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: _darkBlue,
                   ),
@@ -204,7 +204,7 @@ class EdukasiDetailScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     image: DecorationImage(
-                      image: NetworkImage(item.habitatImageUrl),
+                      image: AssetImage(item.habitatImageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),

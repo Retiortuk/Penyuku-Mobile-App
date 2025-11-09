@@ -43,29 +43,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
           SliverAppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
-            pinned: true,
+            pinned: false,
             automaticallyImplyLeading: false,
             toolbarHeight: 80,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.zero,
-              centerTitle: true,
-              title: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
-                decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 25, 44, 71),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(24.0), // Disesuaikan dari 24
-                    bottomRight: Radius.circular(24.0), // Disesuaikan dari 24
+            flexibleSpace: SafeArea(
+                child: FlexibleSpaceBar(
+                titlePadding: EdgeInsets.zero,
+                centerTitle: true,
+                title: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 25, 44, 71),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(24.0), 
+                      bottomRight: Radius.circular(24.0),
+                    ),
+                  ),
+                  child: Image.asset(
+                    'assets/images/logo-penyu.png',
+                    height: 50,
+                    color: Colors.white,
                   ),
                 ),
-                child: Image.asset(
-                  'assets/images/logo-penyu.png',
-                  height: 50,
-                  color: Colors.white,
-                ),
-              ),
             ),
+            )
           ),
 
           SliverToBoxAdapter(child: _buildInfoKomunitas()),
@@ -135,7 +137,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Text(
                 "Info Seputar Komunitas",
                 style: GoogleFonts.poppins(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(255, 25, 44, 71),
                 ),
@@ -162,7 +164,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(16),
                   image: const DecorationImage(
-                    image: NetworkImage('assets/images/penyu-tentang.jpg'),
+                    image: AssetImage('assets/images/penyu-tentang.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -175,7 +177,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 14,
                         shadows: [
                           Shadow(blurRadius: 10.0, color: Colors.black87),
                         ],
@@ -248,7 +250,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Hallo, Kevin",
+            "Halo, Kevin",
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -258,7 +260,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 4),
           Text(
             "Data Keseluruhan Pada Tahun ini",
-            style: GoogleFonts.poppins(color: Colors.white, fontSize: 14),
+            style: GoogleFonts.poppins(color: Colors.white, fontSize: 12),
           ),
           const SizedBox(height: 16),
           // Progress Bar
@@ -294,6 +296,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  fontSize: 12,
                 ),
               ),
               // Text(
@@ -374,7 +377,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 8),
           Text(
             label,
-            style: GoogleFonts.poppins(color: Colors.black, fontSize: 14),
+            style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
           ),
         ],
       ),

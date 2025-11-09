@@ -205,7 +205,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                 Text(
                   data.title,
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: _darkBlue,
                   ),
@@ -215,7 +215,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                 Text(
                   data.description,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 12,
                     color: _greyText,
                     height: 1.6,
                   ),
@@ -233,7 +233,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
-                            image: NetworkImage(data.galleryImages[index]),
+                            image: AssetImage(data.galleryImages[index]),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -259,7 +259,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                     data.buttonText,
                     style: GoogleFonts.poppins(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 12,
                     ),
                   ),
                 ),

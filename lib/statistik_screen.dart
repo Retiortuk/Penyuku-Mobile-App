@@ -67,7 +67,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
       child: Text(
         "Statistik Penyu",
         style: GoogleFonts.poppins(
-          fontSize: 28,
+          fontSize: 24,
           fontWeight: FontWeight.bold,
           color: _darkBlue,
         ),
@@ -99,7 +99,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "Charts",
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: _darkBlue,
               ),
@@ -141,7 +141,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "Penyu",
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: _darkBlue,
               ),
@@ -150,7 +150,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "75",
               style: GoogleFonts.poppins(
-                fontSize: 48,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: _darkBlue,
               ),
@@ -206,7 +206,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "Kapasitas penangkaran",
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.grey[700],
               ),
             ),
@@ -240,7 +240,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "Telur penyu",
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: _darkBlue,
               ),
@@ -249,7 +249,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "342",
               style: GoogleFonts.poppins(
-                fontSize: 48,
+                fontSize: 32,
                 fontWeight: FontWeight.bold,
                 color: _darkBlue,
               ),
@@ -262,7 +262,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                 Text(
                   "46,76%",
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: _redAccent,
                   ),
@@ -273,7 +273,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             Text(
               "Periode 30 hari terakhir",
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 12,
                 color: Colors.grey[700],
               ),
             ),

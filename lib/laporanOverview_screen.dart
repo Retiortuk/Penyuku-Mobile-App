@@ -78,7 +78,7 @@ class LaporanOverviewScreen extends StatelessWidget {
           CircleAvatar(
             radius: 50,
             backgroundColor: Colors.grey[300],
-            backgroundImage: NetworkImage('assets/images/penyu-tentang.jpg'),
+            backgroundImage: AssetImage('assets/images/penyu-tentang.jpg'),
           ),
           const SizedBox(height: 16),
           Text(
@@ -123,7 +123,7 @@ class LaporanOverviewScreen extends StatelessWidget {
                 color: Colors.grey[400],
                 borderRadius: BorderRadius.circular(12), 
                 image: DecorationImage(
-                  image: NetworkImage('assets/images/penyu-tentang.jpg'),
+                  image: AssetImage('assets/images/penyu-tentang.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
