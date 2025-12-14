@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:penyuku/laporanOverview_screen.dart';
 
 class Laporan {
   final String id;
   final String nama;
   final String tanggal;
-  final String imageUrl;
+  final String waktu;
 
   Laporan({
     required this.id,
     required this.nama,
     required this.tanggal,
-    required this.imageUrl,
+    required this.waktu,
   });
 }
 
@@ -29,43 +30,43 @@ class _LaporanScreenState extends State<LaporanScreen> {
       id: '#239487',
       nama: 'Penyu Madura',
       tanggal: '27/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '07:40',
     ),
     Laporan(
       id: '#239488',
       nama: 'Penyu Hijau',
       tanggal: '26/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '09:30',
     ),
     Laporan(
       id: '#239489',
       nama: 'Penyu Sisik',
       tanggal: '25/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '07:40',
     ),
     Laporan(
       id: '#239490',
       nama: 'Penyu Lekang',
       tanggal: '24/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '07:40',
     ),
     Laporan(
       id: '#239491',
       nama: 'Penyu Pipih',
       tanggal: '23/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '07:40',
     ),
     Laporan(
       id: '#239491',
       nama: 'Penyu Wibu',
       tanggal: '23/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '07:40',
     ),
     Laporan(
       id: '#239491',
       nama: 'Penyu Telon',
       tanggal: '23/05/2025',
-      imageUrl: 'assets/images/penyu-tentang.jpg',
+      waktu: '07:40',
     ),
   ];
 
@@ -73,17 +74,22 @@ class _LaporanScreenState extends State<LaporanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBackButton(context),
-            _buildSummaryCards(),
-            _buildLaporanTitle(),
-            _buildLaporanList(),
-          ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildBackButton(context),
+                _buildSummaryCards(),
+                _buildLaporanTitle(),
+                _buildLaporanList(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -91,7 +97,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 50.0, left: 16.0),
+      padding: const EdgeInsets.only(top: 40.0, left: 16.0),
       child: Material(
         color: _darkBlue,
         borderRadius: BorderRadius.circular(24),
@@ -208,7 +214,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
 
   Widget _buildLaporanItem(Laporan laporan) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -218,72 +224,68 @@ class _LaporanScreenState extends State<LaporanScreen> {
             ),
           );
         },
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           decoration: BoxDecoration(
-            color: Colors.grey[200],
-            borderRadius: BorderRadius.circular(12),
+            color: const Color(0xFFD1D5DB).withOpacity(0.5), // Warna abu-abu background card
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.grey[300],
-                backgroundImage: AssetImage(laporan.imageUrl),
+              // Icon Dokumen (Clipboard)
+              Icon(
+                Icons.assignment_outlined, // Icon clipboard
+                color: _darkBlue,
+                size: 32,
               ),
               const SizedBox(width: 16),
 
+              // Kolom Teks (Tanggal, Judul, ID)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Tanggal & Waktu (Kecil, Abu-abu)
+                    Text(
+                      "${laporan.tanggal} – ${laporan.waktu}",
+                      style: GoogleFonts.poppins(
+                        color: Colors.grey[600],
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    
+                    // Nama Laporan (Bold, Biru Tua)
                     Text(
                       laporan.nama,
                       style: GoogleFonts.poppins(
+                        color: _darkBlue,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: 16,
                       ),
                     ),
+                    
+                    // ID Laporan (Kecil, Abu-abu)
                     Text(
                       "ID: ${laporan.id}",
                       style: GoogleFonts.poppins(
-                        color: _darkBlue,
+                        color: Colors.grey[600],
                         fontSize: 12,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
 
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.circle, size: 8, color: Colors.black),
-                      SizedBox(width: 4),
-                      Text(
-                        "Tanggal",
-                        style: GoogleFonts.poppins(
-                          color: _darkBlue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    laporan.tanggal,
-                    style: GoogleFonts.poppins(color: _darkBlue, fontSize: 12),
-                  ),
-                ],
+              // Panah Kanan
+              Icon(
+                Icons.arrow_forward_ios_rounded, 
+                color: _darkBlue, 
+                size: 20
               ),
-              const SizedBox(width: 15),
-
-              // Panah
-              Icon(Icons.chevron_right, color: _darkBlue, size: 30),
             ],
           ),
         ),

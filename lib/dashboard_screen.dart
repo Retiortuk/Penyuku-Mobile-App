@@ -36,38 +36,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
     final List<Widget> screens = [
       // Beranda
       CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             elevation: 0,
-            pinned: false,
+            pinned: true,
             automaticallyImplyLeading: false,
-            toolbarHeight: 80,
-            flexibleSpace: SafeArea(
-                child: FlexibleSpaceBar(
+            toolbarHeight: 80 + statusBarHeight,
+
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                color: Colors.transparent, 
+              ),
+              child: FlexibleSpaceBar(
                 titlePadding: EdgeInsets.zero,
                 centerTitle: true,
+                
                 title: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
+                  padding: EdgeInsets.only(
+                    top: statusBarHeight + 10, 
+                    bottom: 30.0
+                  ),
                   decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 25, 44, 71),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(24.0), 
-                      bottomRight: Radius.circular(24.0),
-                    ),
+                    color: Colors.white, 
                   ),
                   child: Image.asset(
                     'assets/images/logo-penyu.png',
-                    height: 50,
-                    color: Colors.white,
+                    height: 40, 
                   ),
                 ),
+              ),
             ),
-            )
           ),
 
           SliverToBoxAdapter(child: _buildInfoKomunitas()),

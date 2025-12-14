@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 
 class AboutItem {
   final String title;
@@ -39,35 +40,42 @@ class AboutusScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          CustomScrollView(
-            clipBehavior: Clip.none,
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                automaticallyImplyLeading: false, 
-                expandedHeight: 350, 
-                stretch: true, 
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: const [StretchMode.zoomBackground],
-                  background: _buildBackgroundImage(item.mainImageUrl),
-                ),
-              ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark, 
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              CustomScrollView(
+                clipBehavior: Clip.none,
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    automaticallyImplyLeading: false, 
+                    expandedHeight: 350, 
+                    stretch: true, 
+                    flexibleSpace: FlexibleSpaceBar(
+                      stretchModes: const [StretchMode.zoomBackground],
+                      background: _buildBackgroundImage(item.mainImageUrl),
+                    ),
+                  ),
 
-              SliverToBoxAdapter(
-                child: _buildContentSheet(context, item),
+                  SliverToBoxAdapter(
+                    child: _buildContentSheet(context, item),
+                  ),
+                ],
               ),
+          
+              _buildTopButtons(context),
             ],
           ),
-      
-          _buildTopButtons(context),
-        ],
-      ),
+        )
+      )
     );
+
+    
   }
 
   Widget _buildBackgroundImage(String imageUrl) {

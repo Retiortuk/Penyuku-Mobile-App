@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:penyuku/komunitas_screen.dart';
+import 'package:flutter/services.dart';
 
 class EventOverviewScreen extends StatefulWidget {
   final KomunitasCardData eventData;
@@ -118,39 +119,44 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CustomScrollView(
-            clipBehavior: Clip.none,
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                automaticallyImplyLeading: false,
-                expandedHeight: 300,
-                stretch: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: const [StretchMode.zoomBackground],
-                  background: Image.asset(
-                    widget.eventData.headerImageUrl,
-                    fit: BoxFit.cover,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark, 
+      child:  Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Stack(
+            children: [
+              CustomScrollView(
+                clipBehavior: Clip.none,
+                slivers: [
+                  SliverAppBar(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    automaticallyImplyLeading: false,
+                    expandedHeight: 350,
+                    stretch: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      stretchModes: const [StretchMode.zoomBackground],
+                      background: Image.asset(
+                        widget.eventData.headerImageUrl,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                ),
+
+                  SliverToBoxAdapter(
+                    child: _buildContentSheet(context, widget.eventData),
+                  ),
+                ],
               ),
 
-              SliverToBoxAdapter(
-                child: _buildContentSheet(context, widget.eventData),
-              ),
+              _buildBackButton(context),
             ],
           ),
-
-          _buildBackButton(context),
-        ],
-      ),
+        )
+      )
     );
+    
   }
 
   Widget _buildBackButton(BuildContext context) {

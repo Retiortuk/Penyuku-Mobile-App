@@ -28,7 +28,7 @@ class LaporanOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[350],
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -36,10 +36,9 @@ class LaporanOverviewScreen extends StatelessWidget {
             children: [
               _buildBackButton(context),
               const SizedBox(height: 20),
-              _buildHeaderInfo(),
-              const SizedBox(height: 30),
+              // _buildHeaderInfo(),
+              // const SizedBox(height: 30),
               _buildDetailCard(),
-              const SizedBox(height: 40),
               _buildDownloadButton(context),
             ],
           ),
@@ -110,42 +109,21 @@ class LaporanOverviewScreen extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(24.0),
         decoration: BoxDecoration(
-          color: _greyCard.withOpacity(0.5), 
+          color: Colors.white, 
           borderRadius: BorderRadius.circular(12), 
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
             Container(
-              height: 150,
+              height: 400,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey[400],
-                borderRadius: BorderRadius.circular(12), 
+                color: Colors.white,
                 image: DecorationImage(
-                  image: AssetImage('assets/images/penyu-tentang.jpg'),
-                  fit: BoxFit.cover,
+                  image: AssetImage('assets/images/laporan_penyu.png'),
+                  fit: BoxFit.contain
                 ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            Text(
-              "Penyu Madura",
-              style: GoogleFonts.poppins(
-                fontSize: 24, 
-                fontWeight: FontWeight.bold,
-                color: _darkBlue,
-              ),
-            ),
-            const SizedBox(height: 8),
-
-            Text(
-              "Unduh Laporan Untuk Lihat Lebih Detail",
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: _greyText,
-                fontWeight: FontWeight.w500,
               ),
             ),
           ],
@@ -170,7 +148,7 @@ class LaporanOverviewScreen extends StatelessWidget {
           elevation: 4,
         ),
         child: Text(
-          "Unduh Laporan PDF",
+          "Download Laporan",
           style: GoogleFonts.poppins(
             color: Colors.white,
             fontSize: 16,

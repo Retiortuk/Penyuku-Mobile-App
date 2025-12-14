@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:fl_chart/fl_chart.dart'; 
+import 'package:flutter/services.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class StatistikScreen extends StatefulWidget {
   const StatistikScreen({super.key});
@@ -18,22 +19,25 @@ class _StatistikScreenState extends State<StatistikScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildBackButton(context),
-              _buildHeader(),
-              _buildChartCard(),
-              const SizedBox(height: 16),
-              _buildPenyuCard(),
-              const SizedBox(height: 16),
-              _buildTelurCard(),
-              const SizedBox(height: 20), 
-            ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildBackButton(context),
+                _buildHeader(),
+                _buildChartCard(),
+                const SizedBox(height: 16),
+                _buildPenyuCard(),
+                const SizedBox(height: 16),
+                _buildTelurCard(),
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
@@ -42,7 +46,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 15.0, left: 16.0),
+      padding: const EdgeInsets.only(top: 40.0, left: 16.0),
       child: Material(
         color: _darkBlue,
         borderRadius: BorderRadius.circular(24),
@@ -89,7 +93,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 5,
               blurRadius: 5,
-              offset: const Offset(0, 5), 
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -105,12 +109,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              height: 200,
-              child: BarChart(
-                _mainBarChartData(),
-              ),
-            ),
+            SizedBox(height: 200, child: BarChart(_mainBarChartData())),
           ],
         ),
       ),
@@ -131,9 +130,9 @@ class _StatistikScreenState extends State<StatistikScreen> {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 5,
               blurRadius: 5,
-              offset: const Offset(0, 5), 
+              offset: const Offset(0, 5),
             ),
-          ]
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,17 +167,15 @@ class _StatistikScreenState extends State<StatistikScreen> {
                 ),
                 Container(
                   height: 12,
-                  width: (MediaQuery.of(context).size.width - 72) *
-                      0.75, 
+                  width: (MediaQuery.of(context).size.width - 72) * 0.75,
                   decoration: BoxDecoration(
                     color: _darkBlue,
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 Positioned(
-                  left: (MediaQuery.of(context).size.width - 72) * 0.75 -
-                      25, 
-                  bottom: 15, 
+                  left: (MediaQuery.of(context).size.width - 72) * 0.75 - 25,
+                  bottom: 15,
                   child: Text(
                     "75%",
                     style: GoogleFonts.poppins(
@@ -190,7 +187,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
                 ),
                 Positioned(
                   right: 0,
-                  bottom: 15, 
+                  bottom: 15,
                   child: Text(
                     "75/100",
                     style: GoogleFonts.poppins(
@@ -205,10 +202,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             const SizedBox(height: 16),
             Text(
               "Kapasitas penangkaran",
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                color: Colors.grey[700],
-              ),
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
             ),
           ],
         ),
@@ -230,9 +224,9 @@ class _StatistikScreenState extends State<StatistikScreen> {
               color: Colors.grey.withOpacity(0.1),
               spreadRadius: 5,
               blurRadius: 5,
-              offset: const Offset(0, 5), 
+              offset: const Offset(0, 5),
             ),
-          ]
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,10 +266,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             const SizedBox(height: 8),
             Text(
               "Periode 30 hari terakhir",
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                color: Colors.grey[700],
-              ),
+              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
             ),
           ],
         ),
@@ -285,7 +276,15 @@ class _StatistikScreenState extends State<StatistikScreen> {
 
   BarChartData _mainBarChartData() {
     final List<double> chartData = [
-      300, 750, 800, 780, 150, 450, 300, 550, 530
+      300,
+      750,
+      800,
+      780,
+      150,
+      450,
+      300,
+      550,
+      530,
     ];
 
     return BarChartData(
@@ -309,7 +308,9 @@ class _StatistikScreenState extends State<StatistikScreen> {
           ),
         ),
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
       ),
       // Data Bar
       barGroups: List.generate(chartData.length, (index) {

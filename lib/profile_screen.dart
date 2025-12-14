@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:penyuku/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -16,21 +17,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 80),
-            Center(child: _buildProfileHeader()),
-            const SizedBox(height: 24),
-            _buildStatsCard(),
-            const SizedBox(height: 24),
-            _buildTentangSaya(),
-            const SizedBox(height: 20),
-          ],
-        ),
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: 
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 80),
+                Center(child: _buildProfileHeader()),
+                const SizedBox(height: 24),
+                _buildStatsCard(),
+                const SizedBox(height: 24),
+                _buildTentangSaya(),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+        )
       ),
     );
   }
@@ -62,7 +69,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "Member Sejak: 20/08/25",
           style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[500]),
         ),
-        const SizedBox(height: 8), 
+        const SizedBox(height: 8),
         GestureDetector(
           onTap: () {
             Navigator.push(
@@ -74,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             "Keluar",
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: Colors.red[700], 
+              color: Colors.red[700],
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -165,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: GoogleFonts.poppins(
               fontSize: 12,
               color: _greyText,
-              height: 1.6, 
+              height: 1.6,
             ),
           ),
         ],

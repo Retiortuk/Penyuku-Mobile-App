@@ -116,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Opacity(
                 opacity: 0.4,
                 child: Text(
-                  "Name",
+                  "Nama",
                   style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                 ),
               ),
@@ -266,7 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "Register",
+                        "Daftar",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 15,
@@ -284,7 +284,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Already Have an Account ?",
+                    "Sudah Punya Akun ?",
                     style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
                   ),
                   GestureDetector(
@@ -292,7 +292,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Navigator.pop(context);
                     },
                     child: Text(
-                      " Login",
+                      " Masuk",
                       style: GoogleFonts.poppins(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,

@@ -41,32 +41,34 @@ class EdukasiDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          CustomScrollView(
-            clipBehavior: Clip.none,
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                automaticallyImplyLeading: false, 
-                expandedHeight: 350, 
-                stretch: true, 
-                flexibleSpace: FlexibleSpaceBar(
-                  stretchModes: const [StretchMode.zoomBackground],
-                  background: _buildBackgroundImage(item.mainImageUrl),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            CustomScrollView(
+              clipBehavior: Clip.none,
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  automaticallyImplyLeading: false, 
+                  expandedHeight: 350, 
+                  stretch: true, 
+                  flexibleSpace: FlexibleSpaceBar(
+                    stretchModes: const [StretchMode.zoomBackground],
+                    background: _buildBackgroundImage(item.mainImageUrl),
+                  ),
                 ),
-              ),
 
-              SliverToBoxAdapter(
-                child: _buildContentSheet(context, item),
-              ),
-            ],
-          ),
-      
-          _buildTopButtons(context),
-        ],
-      ),
+                SliverToBoxAdapter(
+                  child: _buildContentSheet(context, item),
+                ),
+              ],
+            ),
+        
+            _buildTopButtons(context),
+          ],
+        ),
+      )
     );
   }
 

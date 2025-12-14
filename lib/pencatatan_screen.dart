@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PencatatanScreen extends StatefulWidget {
@@ -122,17 +123,22 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildBackButton(context),
-            _buildImageToUpload(),
-            _buildFormCard(),
-            _buildButtonSubmit(),
-          ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark, 
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildBackButton(context),
+                _buildImageToUpload(),
+                _buildFormCard(),
+                _buildButtonSubmit(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -140,7 +146,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
 
   Widget _buildBackButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.only(top: 50.0, left: 16.0),
+      padding: EdgeInsets.only(top: 20.0, left: 16.0),
       child: Material(
         color: const Color.fromARGB(255, 25, 44, 71),
         borderRadius: BorderRadius.circular(24),
@@ -298,7 +304,7 @@ class _PencatatanScreenState extends State<PencatatanScreen> {
         top: 16.0,
         left: 16.0,
         right: 16.0,
-        bottom: 50.0,
+        bottom: 16.0,
       ),
       child: ElevatedButton(
         onPressed: () {

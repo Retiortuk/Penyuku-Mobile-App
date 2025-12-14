@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   stops: [0.0, 1.0],
                 ).createShader(bounds),
                 child: Text(
-                  "Login into your \nAccount",
+                  "Masuk Ke \nAkun Anda",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -185,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     
                     Text(
-                      "Remember Me",
+                      "Ingat Saya",
                       style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.black,
@@ -193,10 +193,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                // Text(
-                //   "Forgot Password?",
-                //   style: GoogleFonts.poppins(fontSize: 14, color: Colors.black),
-                // ),
+                Text(
+                  "Lupa Password?",
+                  style: GoogleFonts.poppins(fontSize: 12, color: Colors.black),
+                ),
               ],
             ),
             const SizedBox(height: 15),
@@ -239,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "Login",
+                        "Masuk",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 15,
@@ -257,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account ?",
+                    "Tidak Punya Akun ?",
                     style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 12
@@ -273,7 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: Text(
-                      " Register",
+                      " Daftar",
                       style: GoogleFonts.poppins(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
