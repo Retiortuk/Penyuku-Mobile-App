@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/forget_password_screen.dart';
-import 'register_screen.dart';
-import 'dashboard_screen.dart';
+import 'package:penyuku/login_screen.dart';
+import 'package:penyuku/otp_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class ForgetPassword extends StatefulWidget {
+  const ForgetPassword({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgetPassword> createState() => _ForgetPasswordState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool _isPasswordVisible = false;
-  bool _rememberMe = false;
+class _ForgetPasswordState extends State<ForgetPassword> {
 
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(height: 40),
-                    _buildLoginCard(context),
+                    _buildForgetCard(context),
                   ],
                 ),
               ),
@@ -52,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   // Form login di dalam card putih
-  Widget _buildLoginCard(BuildContext context) {
+  Widget _buildForgetCard(BuildContext context) {
     return Card(
       elevation: 10,
       shadowColor: Colors.black26,
@@ -61,19 +57,34 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Opacity(
-                opacity: 0.4,
-                child: Text(
-                  "Welcome To Penyu Ku.",
-                  style: GoogleFonts.poppins(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back),
+                    iconSize: 28.0,
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
-              ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Opacity(
+                    opacity: 0.4,
+                    child: Text(
+                      "Kembali",
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             Align(
@@ -89,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   stops: [0.0, 1.0],
                 ).createShader(bounds),
                 child: Text(
-                  "Masuk Ke \nAkun Anda",
+                  "Verifikasi \nEmail Anda",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -123,102 +134,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 30),
 
-            // Password
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Opacity(
-                opacity: 0.4,
-                child: Text(
-                  "Password",
-                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _passwordController,
-              obscureText: !_isPasswordVisible,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isPasswordVisible
-                        ? Icons.visibility_off
-                        : Icons.visibility,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                ),
-                filled: true,
-                fillColor: Colors.grey[100],
-                contentPadding:  const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
-                ),
-              ),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                      Transform.scale(
-                        scale: 0.8,
-                        child: Checkbox(
-                        value: _rememberMe,
-                        onChanged: (bool? newValue) {
-                          setState(() {
-                            _rememberMe = newValue!;
-                          });
-                        },
-                        activeColor: const Color.fromARGB(255, 65, 97, 145),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ),
-  
-                    Text(
-                      "Ingat Saya",
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: Colors.black,
-                      ),
-                    ),
-
-                    
-                  ],
-                ),
-
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ForgetPassword(),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    "Lupa Password?",
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                
-              ],
-            ),
-            const SizedBox(height: 15),
-
-            // Tombol Login
+            // Tombol Kirim OTP
             Padding(
               padding: EdgeInsetsGeometry.only(bottom: 15),
               child: SizedBox(
@@ -227,12 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     final email = _emailController.text;
-                    final password = _passwordController.text;
-                    print("Login attempt: $email | $password");
+                    print("Login attempt: $email");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const DashboardScreen(),
+                        builder: (context) => const OtpScreen(),
                       ),
                     );
                   },
@@ -256,7 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       alignment: Alignment.center,
                       child: Text(
-                        "Masuk",
+                        "Kirim OTP",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 15,
@@ -274,7 +191,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Tidak Punya Akun ?",
+                    "Ingat Password ?",
                     style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 12
@@ -285,12 +202,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const RegisterScreen(),
+                          builder: (context) => const LoginScreen(),
                         ),
                       );
                     },
                     child: Text(
-                      " Daftar",
+                      " Masuk",
                       style: GoogleFonts.poppins(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,

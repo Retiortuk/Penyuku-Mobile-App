@@ -5,8 +5,6 @@ class LaporanOverviewScreen extends StatelessWidget {
   const LaporanOverviewScreen({super.key});
 
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
-  final Color _greyCard = const Color(0xFFE0E0E0);
-  final Color _greyText = const Color.fromARGB(255, 25, 44, 71);
 
   void _showDownloadToast(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -66,38 +64,6 @@ class LaporanOverviewScreen extends StatelessWidget {
             child: const Icon(Icons.arrow_back, color: Colors.white),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildHeaderInfo() {
-    return Center(
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey[300],
-            backgroundImage: AssetImage('assets/images/penyu-tentang.jpg'),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Penyu Madura",
-            style: GoogleFonts.poppins(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: _darkBlue,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            "ID: #1293898",
-            style: GoogleFonts.poppins(fontSize: 14, color: _greyText),
-          ),
-          Text(
-            "Tanggal: 27/05/2025",
-            style: GoogleFonts.poppins(fontSize: 14, color: _greyText),
-          ),
-        ],
       ),
     );
   }
