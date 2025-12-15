@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/add_aktivitas_screen.dart';
 import 'komunitas_overview.dart';
 
 class KomunitasCardData {
@@ -40,7 +41,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
     KomunitasCardData(
       title: 'Jadi Relawan Inti',
       subtitle: 'Naik Level: Jadi Relawan Inti',
-      headerImageUrl: 'assets/images/jadi-relawan-inti.png', 
+      headerImageUrl: 'assets/images/jadi-relawan-inti.png',
       description:
           'Naik level dan jadilah relawan inti! Anda akan belajar cara menangani telur, merawat tukik, dan berpartisipasi langsung dalam aksi pelestarian yang lebih mendalam.',
       galleryImages: [
@@ -104,6 +105,101 @@ class _KomunitasScreenState extends State<KomunitasScreen>
     super.dispose();
   }
 
+  void _showConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          title: Text(
+            "Konfirmasi",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 25, 44, 71),
+            ),
+          ),
+          content: Text(
+            "Apakah Anda yakin ingin menerima pengajuan ini?",
+            style: GoogleFonts.poppins(),
+          ),
+          actions: [
+            Container(
+              height: 1,
+              color: Colors.grey[300],
+              margin: const EdgeInsets.only(top: 20),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                    child: Text(
+                      "Tidak",
+                      style: GoogleFonts.poppins(color: Colors.redAccent),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                    },
+                  ),
+                ),
+                Container(width: 1, height: 40, color: Colors.grey[300]),
+                Expanded(
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                    child: Text(
+                      "Iya",
+                      style: GoogleFonts.poppins(
+                        color: const Color.fromARGB(255, 25, 44, 71),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.of(dialogContext).pop();
+                      _handleAcc();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _handleAcc() {
+    print("Meng Acc pengajuan user");
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Berhasil Menerima Pengajuan User!",
+          style: GoogleFonts.poppins(color: Colors.white),
+        ),
+        duration: Duration(seconds: 2),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -119,8 +215,12 @@ class _KomunitasScreenState extends State<KomunitasScreen>
               ),
               child: IconButton(
                 onPressed: () {
-                  // TODO: Aksi tambah postingan/aktivitas
-                  print("FAB Pressed");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddAktivitasScreen(),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.add, color: Colors.white, size: 32),
               ),
@@ -161,7 +261,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
                 ),
-                overlayColor: MaterialStateProperty.all(Colors.transparent),
+                overlayColor: WidgetStateProperty.all(Colors.transparent),
                 labelPadding: const EdgeInsets.symmetric(horizontal: 0),
                 tabs: const [
                   Tab(text: 'Aktivitas'),
@@ -191,10 +291,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
 
   Widget _buildAktivitasList() {
     return ListView.builder(
-      padding: const EdgeInsets.only(
-        top: 16,
-        bottom: 16,
-      ),
+      padding: const EdgeInsets.only(top: 16, bottom: 16),
       itemCount: _cardList.length,
       itemBuilder: (context, index) {
         return _buildKomunitasCard(_cardList[index]);
@@ -240,9 +337,9 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.black.withOpacity(0.6), 
+                      Colors.black.withOpacity(0.6),
                       Colors.transparent,
-                      Colors.black.withOpacity(0.7), 
+                      Colors.black.withOpacity(0.7),
                     ],
                   ),
                 ),
@@ -287,7 +384,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.25), 
+                    color: Colors.white.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: Colors.white.withOpacity(0.5),
@@ -322,54 +419,59 @@ class _KomunitasScreenState extends State<KomunitasScreen>
   }
 
   Widget _buildPengajuanCard(Map<String, String> data) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFD1D5DB), 
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () {
+        _showConfirmationDialog();
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFD1D5DB),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.person, color: Colors.black, size: 30),
               ),
-              child: const Icon(Icons.person, color: Colors.black, size: 30),
-            ),
-            const SizedBox(width: 16),
+              const SizedBox(width: 16),
 
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    data['title']!,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: _darkBlue,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      data['title']!,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: _darkBlue,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    data['email']!,
-                    style: GoogleFonts.poppins(
-                      fontSize: 12,
-                      color: _darkBlue.withOpacity(0.8),
+                    const SizedBox(height: 2),
+                    Text(
+                      data['email']!,
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: _darkBlue.withOpacity(0.8),
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            Icon(Icons.arrow_forward_ios_rounded, color: _darkBlue, size: 24),
-          ],
+              Icon(Icons.arrow_forward_ios_rounded, color: _darkBlue, size: 24),
+            ],
+          ),
         ),
       ),
     );
@@ -391,7 +493,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.circle, color: Colors.grey, size: 40), 
+                child: const Icon(Icons.circle, color: Colors.grey, size: 40),
               ),
               const SizedBox(width: 12),
               Text(
@@ -406,11 +508,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
           ),
         ),
 
-        Expanded(
-          child: Container(
-            color: const Color(0xFFD1D5DB), 
-          ),
-        ),
+        Expanded(child: Container(color: const Color(0xFFD1D5DB))),
 
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -456,11 +554,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                   print("Send: ${_chatController.text}");
                   _chatController.clear();
                 },
-                child: Icon(
-                  Icons.send_rounded, 
-                  color: _darkBlue,
-                  size: 28,
-                ),
+                child: Icon(Icons.send_rounded, color: _darkBlue, size: 28),
               ),
             ],
           ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart'
+    show TextInputFormatter, FilteringTextInputFormatter;
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/login_screen.dart';
 import 'package:penyuku/reset_password_screen.dart';
 
 class OtpScreen extends StatefulWidget {

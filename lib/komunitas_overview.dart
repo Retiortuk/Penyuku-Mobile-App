@@ -13,7 +13,21 @@ class EventOverviewScreen extends StatefulWidget {
 }
 
 class _EventOverviewScreenState extends State<EventOverviewScreen> {
-  void _showConfirmationDialog() {
+  void _showConfirmationDialog(String actionType) {
+    String titleText = "Konfirmasi";
+    String contentText = "Apakah Anda yakin dengan aksi ini?";
+    String confirmText = "Iya";
+    Color confirmColor = const Color.fromARGB(255, 25, 44, 71);
+
+    if (actionType == "delete") {
+      titleText = "Hapus Aktivitas";
+      contentText = "Apakah Anda yakin ingin menghapus aktivitas ini?";
+      confirmText = "Hapus";
+      confirmColor = Colors.redAccent;
+    } else {
+      contentText = "Apakah Anda yakin ingin mengajukan permintaan ini?";
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -22,63 +36,68 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
             borderRadius: BorderRadius.circular(15.0),
           ),
           title: Text(
-            "Konfirmasi",
+            titleText,
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 25, 44, 71),
+              color: _darkBlue,
             ),
           ),
-          content: Text(
-            "Apakah Anda yakin dengan aksi ini?",
-            style: GoogleFonts.poppins(),
-          ),
+          content: Text(contentText, style: GoogleFonts.poppins()),
+          actionsPadding: EdgeInsets.zero,
           actions: [
-            Container(
-              height: 1,
-              color: Colors.grey[300],
-              margin: const EdgeInsets.only(top: 20),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
               children: [
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
+                Container(height: 1, color: Colors.grey[300]),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(15),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          "Tidak",
+                          style: GoogleFonts.poppins(
+                            color: Colors.redAccent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+                        },
                       ),
                     ),
-                    child: Text(
-                      "Tidak",
-                      style: GoogleFonts.poppins(color: Colors.redAccent),
-                    ),
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                    },
-                  ),
-                ),
-                Container(width: 1, height: 48, color: Colors.grey[300]),
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
+                    Container(width: 1, height: 50, color: Colors.grey[300]),
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(15),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          confirmText,
+                          style: GoogleFonts.poppins(
+                            color: confirmColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(dialogContext).pop();
+
+                          _handleAction(actionType);
+                        },
                       ),
                     ),
-                    child: Text(
-                      "Iya",
-                      style: GoogleFonts.poppins(
-                        color: const Color.fromARGB(255, 25, 44, 71),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                      _handleDataUpload();
-                    },
-                  ),
+                  ],
                 ),
               ],
             ),
@@ -88,23 +107,31 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
     );
   }
 
-  void _handleDataUpload() {
+  void _handleAction(String actionType) {
+    String message = "";
+    Color snackBarColor = Colors.green;
     print("Berhasil Di Ajukan!");
 
-    String message = 'Permintaan berhasil diajukan!';
-    if (widget.eventData.title == 'Galeri Aksi Komunitas') {
-      message = 'Permintaan Gabung Komunitas Berhasil Diajukan!';
-    } else if (widget.eventData.title == 'Jadi Relawan Inti') {
-      message = 'Permintaan Jadi Relawan Berhasil Diajukan!';
-    } else if (widget.eventData.title == 'Turun Tangan') {
-      message = 'Pengajuan Turun Tangan Berhasil Diajukan';
+    if (actionType == "delete") {
+      message = "Aktivitas berhasil dihapus";
+      snackBarColor = Colors.redAccent;
+    } else {
+      if (widget.eventData.title == 'Galeri Aksi Komunitas') {
+        message = 'Permintaan Gabung Komunitas Berhasil Diajukan!';
+      } else if (widget.eventData.title == 'Jadi Relawan Inti') {
+        message = 'Permintaan Jadi Relawan Berhasil Diajukan!';
+      } else if (widget.eventData.title == 'Turun Tangan') {
+        message = 'Pengajuan Turun Tangan Berhasil Diajukan';
+      } else {
+        message = 'Permintaan berhasil diajukan!';
+      }
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
         duration: Duration(seconds: 4),
-        backgroundColor: Colors.green,
+        backgroundColor: snackBarColor,
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(
@@ -112,6 +139,10 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
         ),
       ),
     );
+
+    if (actionType == 'delete') {
+      Navigator.pop(context);
+    }
   }
 
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
@@ -120,8 +151,8 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark, 
-      child:  Scaffold(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Stack(
@@ -150,32 +181,62 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                 ],
               ),
 
-              _buildBackButton(context),
-            ],
-          ),
-        )
-      )
-    );
-    
-  }
+              Positioned(
+                top: 0,
+                left: 0,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15.0, left: 16.0),
+                    child: Material(
+                      color: _darkBlue.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(15),
+                      elevation: 4,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () => Navigator.of(context).pop(),
+                        child: Container(
+                          width: 50,
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
 
-  Widget _buildBackButton(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 15.0, left: 16.0),
-        child: Material(
-          color: _darkBlue.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(15),
-          elevation: 4,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(15),
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(
-              width: 50,
-              height: 40,
-              alignment: Alignment.center,
-              child: const Icon(Icons.arrow_back, color: Colors.white),
-            ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 15.0, right: 16.0),
+                    child: Material(
+                      color: Colors.red.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(15),
+                      elevation: 4,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () => _showConfirmationDialog("delete"),
+                        child: Container(
+                          width: 50,
+                          height: 40,
+                          alignment: Alignment.center,
+                          child: const Icon(
+                            Icons.delete_forever_rounded,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -251,7 +312,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
 
                 ElevatedButton(
                   onPressed: () {
-                    _showConfirmationDialog();
+                    _showConfirmationDialog("submit");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _darkBlue,
