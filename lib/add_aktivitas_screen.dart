@@ -14,7 +14,6 @@ class _AddAktivitasScreenState extends State<AddAktivitasScreen> {
   final TextEditingController _deskripsiControlller = TextEditingController();
 
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
-  final Color _greyBorder = const Color(0xFFE0E0E0);
 
   @override
   void dispose() {

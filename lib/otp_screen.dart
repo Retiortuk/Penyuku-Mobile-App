@@ -54,7 +54,6 @@ class _OtpScreenState extends State<OtpScreen> {
               fit: BoxFit.cover,
             ),
 
-            // Konten utama
             Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -73,7 +72,6 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  // Form login di dalam card putih
   Widget _buildOtpCard(BuildContext context) {
     return Card(
       elevation: 10,
