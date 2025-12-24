@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/add_aktivitas_screen.dart';
-import 'komunitas_overview.dart';
+import 'package:penyuku/add_activity_screen.dart';
+import 'comunity_overview.dart';
 
 class KomunitasCardData {
   final String title;

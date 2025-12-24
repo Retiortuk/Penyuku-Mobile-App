@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
-import 'package:penyuku/laporanOverview_screen.dart';
+import 'package:penyuku/report_overview_screen.dart';
 
 class Laporan {
   final String id;

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/aboutUs_screen.dart';
-import 'package:penyuku/laporan_screen.dart';
-import 'package:penyuku/statistik_screen.dart';
-import 'pencatatan_screen.dart';
-import 'edukasi_screen.dart';
-import 'komunitas_screen.dart';
+import 'package:penyuku/about_us_screen.dart';
+import 'package:penyuku/report_screen.dart';
+import 'package:penyuku/statistic_screen.dart';
+import 'input_report_screen.dart';
+import 'education_screen.dart';
+import 'comunity_screen.dart';
 import 'profile_screen.dart';
 
 class DashboardScreen extends StatefulWidget {

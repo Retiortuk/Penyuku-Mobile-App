@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/komunitas_screen.dart';
+import 'package:penyuku/comunity_screen.dart';
 import 'package:flutter/services.dart';
 
 class EventOverviewScreen extends StatefulWidget {
