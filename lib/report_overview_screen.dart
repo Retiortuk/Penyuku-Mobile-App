@@ -28,18 +28,27 @@ class LaporanOverviewScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[350],
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildBackButton(context),
-              const SizedBox(height: 20),
-              // _buildHeaderInfo(),
-              // const SizedBox(height: 30),
-              _buildDetailCard(),
-              _buildDownloadButton(context),
-            ],
-          ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildBackButton(context),
+                    const SizedBox(height: 20),
+                    _buildDetailCard(),
+                    const SizedBox(height: 20), 
+                  ],
+                ),
+              ),
+            ),
+            
+            Container(
+              color: Colors.grey[350],
+              child: _buildDownloadButton(context),
+            ),
+          ],
         ),
       ),
     );
@@ -82,7 +91,7 @@ class LaporanOverviewScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
             Container(
-              height: 400,
+              height: 500,
               width: double.infinity,
               decoration: BoxDecoration(
                 color: Colors.white,
