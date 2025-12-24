@@ -153,91 +153,118 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SafeArea(
-          child: Stack(
-            children: [
-              CustomScrollView(
-                clipBehavior: Clip.none,
-                slivers: [
-                  SliverAppBar(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    automaticallyImplyLeading: false,
-                    expandedHeight: 350,
-                    stretch: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      stretchModes: const [StretchMode.zoomBackground],
-                      background: Image.asset(
-                        widget.eventData.headerImageUrl,
-                        fit: BoxFit.cover,
-                      ),
+        backgroundColor: Colors.white, 
+        body: Stack(
+          children: [
+            CustomScrollView(
+              clipBehavior: Clip.none,
+              slivers: [
+                SliverAppBar(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  automaticallyImplyLeading: false,
+                  expandedHeight: 350,
+                  stretch: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    stretchModes: const [StretchMode.zoomBackground],
+                    background: Image.asset(
+                      widget.eventData.headerImageUrl,
+                      fit: BoxFit.cover,
                     ),
                   ),
+                ),
+                SliverToBoxAdapter(
+                  child: _buildContentSheet(context, widget.eventData),
+                ),
+              ],
+            ),
 
-                  SliverToBoxAdapter(
-                    child: _buildContentSheet(context, widget.eventData),
-                  ),
-                ],
-              ),
-
-              Positioned(
-                top: 0,
-                left: 0,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 15.0, left: 16.0),
-                    child: Material(
-                      color: _darkBlue.withOpacity(0.8),
+            Positioned(
+              top: 0, left: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15.0, left: 16.0),
+                  child: Material(
+                    color: _darkBlue.withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(15),
+                    elevation: 4,
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(15),
-                      elevation: 4,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(15),
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Container(
-                          width: 50,
-                          height: 40,
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                          ),
-                        ),
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        width: 50, height: 40,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.arrow_back, color: Colors.white),
                       ),
                     ),
                   ),
                 ),
               ),
-
-              Positioned(
-                top: 0,
-                right: 0,
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 15.0, right: 16.0),
-                    child: Material(
-                      color: Colors.red.withOpacity(0.9),
+            ),
+            Positioned(
+              top: 0, right: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 15.0, right: 16.0),
+                  child: Material(
+                    color: Colors.red.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(15),
+                    elevation: 4,
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(15),
-                      elevation: 4,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(15),
-                        onTap: () => _showConfirmationDialog("delete"),
-                        child: Container(
-                          width: 50,
-                          height: 40,
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.delete_forever_rounded,
-                            color: Colors.white,
-                          ),
-                        ),
+                      onTap: () => _showConfirmationDialog("delete"),
+                      child: Container(
+                        width: 50, height: 40,
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.delete_forever_rounded, color: Colors.white),
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                padding: const EdgeInsets.all(24.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -5),
+                    ),
+                  ],
+                ),
+                child: SafeArea( 
+                  top: false,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _showConfirmationDialog("submit");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _darkBlue,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 4,
+                    ),
+                    child: Text(
+                      widget.eventData.buttonText,
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 16, 
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -309,27 +336,6 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                   ),
                 ),
                 const SizedBox(height: 60),
-
-                ElevatedButton(
-                  onPressed: () {
-                    _showConfirmationDialog("submit");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _darkBlue,
-                    minimumSize: const Size(double.infinity, 50),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 4,
-                  ),
-                  child: Text(
-                    data.buttonText,
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
