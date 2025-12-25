@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 import 'package:penyuku/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -11,11 +12,92 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
+
+  final AuthController _authController = AuthController();
+
+  //Handle register
+  Future<void> _handleRegister() async {
+    if( _nameController.text.isEmpty ||
+        _userNameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
+        _passwordController.text.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Semua Kolom Harus diisi!",),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ), 
+            )
+          );
+          return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _authController.register(
+        name: _nameController.text.trim(), 
+        username: _userNameController.text.trim(), 
+        email: _emailController.text.trim(), 
+        password: _passwordController.text
+      );
+
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Registrasi Berhasil Silahkan, Silahkan Masuk!"),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+
+        Navigator.push(
+          context, 
+          MaterialPageRoute(builder: (context) => const LoginScreen())
+        );
+      }
+
+    } catch (e) {
+      if(mounted) {
+        String errorMessage = e.toString().replaceAll("Exception: ", "");
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+      }
+    } finally {
+      if(mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -235,17 +317,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: 135.0,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    final email = _emailController.text;
-                    final password = _passwordController.text;
-                    print("Register attempt: $email | $password");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: _isLoading ? null : _handleRegister ,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
@@ -265,12 +337,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(
-                        "Daftar",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
+                      child: _isLoading 
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2,),
+                          )
+                        : Text(
+                            "Daftar",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 15,
+                          ),
                       ),
                     ),
                   ),

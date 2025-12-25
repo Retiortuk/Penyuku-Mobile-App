@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:penyuku/forget_password_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
 import 'dashboard_screen.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,9 +16,78 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
+  bool _isLoading =  false;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  final AuthController _authController = AuthController();
+
+  Future<void> _handleLogin() async {
+    if(_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: 
+            Text("Email Atau Password Tidak Boleh Kosong!"), 
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ), 
+          )
+      );
+      return;
+    }
+    
+    setState(() {
+      _isLoading = true;
+    });
+    
+    try {
+      final userData = await _authController.login(
+        email: _emailController.text.trim(), 
+        password: _passwordController.text
+      );
+
+      print("Login Berhasil! Data User: $userData");
+
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Selamat datang, ${userData['name']}!"), 
+            backgroundColor: Colors.green
+          ),
+        );
+
+        Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(
+            builder: (context) => const DashboardScreen(),
+          )
+        );
+      }
+    } catch (e) {
+      if(mounted) {
+        final message = e.toString().replaceAll("Exception: ", "");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message), 
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -225,17 +296,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 width: 135.0,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    final email = _emailController.text;
-                    final password = _passwordController.text;
-                    print("Login attempt: $email | $password");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DashboardScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: _isLoading ? null : _handleLogin,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
@@ -255,12 +316,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(
-                        "Masuk",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
+                      child: _isLoading
+                        ? const SizedBox(
+                            height: 20, 
+                            width: 20, 
+                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                          )
+                        : Text(
+                          "Masuk",
+                          style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
                       ),
                     ),
                   ),
