@@ -1,249 +1,121 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show TextInputFormatter, FilteringTextInputFormatter;
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 import 'package:penyuku/reset_password_screen.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final String email; 
+  const OtpScreen({super.key, required this.email});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final List<TextEditingController> _controllers = List.generate(
-    6,
-    (index) => TextEditingController(),
-  );
+  final TextEditingController _otpController = TextEditingController();
+  final AuthController _authController = AuthController();
+  bool _isLoading = false;
 
-  final List<FocusNode> _focusNodes = List.generate(6, (index) => FocusNode());
+  // Logika Verifikasi OTP
+  Future<void> _handleVerify() async {
+    if (_otpController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Masukkan kode OTP"), backgroundColor: Colors.red),
+      );
+      return;
+    }
 
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    for (var node in _focusNodes) {
-      node.dispose();
-    }
-    super.dispose();
-  }
+    setState(() => _isLoading = true);
 
-  void _nextField(String value, int index) {
-    if (value.length == 1 && index < 5) {
-      _focusNodes[index + 1].requestFocus();
-    }
-    // Jika user menghapus karakter (backspace), pindah ke kolom sebelumnya
-    if (value.isEmpty && index > 0) {
-      _focusNodes[index - 1].requestFocus();
+    try {
+      await _authController.verifyOtp(widget.email, _otpController.text.trim());
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("OTP Valid"),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+        
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResetPasswordScreen(email: widget.email),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll("Exception: ", "")), 
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Image.asset(
-              'assets/images/login_background.png',
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
-
-            Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40),
-                    _buildOtpCard(context),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text("Verifikasi OTP", style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
-    );
-  }
-
-  Widget _buildOtpCard(BuildContext context) {
-    return Card(
-      elevation: 10,
-      shadowColor: Colors.black26,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    iconSize: 28.0,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Opacity(
-                    opacity: 0.4,
-                    child: Text(
-                      "Kembali",
-                      style: GoogleFonts.poppins(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            Text(
+              "Masukkan 4 digit kode yang dikirim ke \n${widget.email}",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
             ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [
-                    Color.fromARGB(255, 16, 31, 53),
-                    Color.fromARGB(255, 65, 97, 145),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [0.0, 1.0],
-                ).createShader(bounds),
-                child: Text(
-                  "Masukan Kode \nOTP",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
+            const SizedBox(height: 40),
+            TextFormField(
+              controller: _otpController,
+              keyboardType: TextInputType.number,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(fontSize: 24, letterSpacing: 8, fontWeight: FontWeight.bold),
+              maxLength: 4,
+              decoration: InputDecoration(
+                counterText: "",
+                hintText: "----",
+                filled: true,
+                fillColor: Colors.grey[100],
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
               ),
             ),
-            const SizedBox(height: 10),
-            // OTP Field
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(4, (index) {
-                return Container(
-                  width: 40,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 25, 44, 71),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextField(
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    maxLength: 1,
-                    cursorColor: Colors.white,
-                    decoration: const InputDecoration(
-                      counterText: "", // Hilangkan counter "0/1"
-                      border: InputBorder.none, // Hilangkan garis bawah default
-                    ),
-                    onChanged: (value) => _nextField(value, index),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 30),
-
-            // Tombol Kirim OTP
-            Padding(
-              padding: EdgeInsetsGeometry.only(bottom: 15),
-              child: SizedBox(
-                width: 135.0,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final otp = _controllers.map((e) => e.text).join();
-                    print("verifikasi attempt: $otp");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ResetPasswordScreen(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color.fromARGB(255, 16, 31, 53),
-                          Color.fromARGB(255, 65, 97, 145),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Verifikasi",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                  ),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _handleVerify,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 16, 31, 53),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-              ),
-            ),
-
-            Padding(
-              padding: EdgeInsets.only(bottom: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Kode OTP Tidak Masuk ?",
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 12,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      print("Kirim OTP lagi");
-                    },
-                    child: Text(
-                      " Kirim Ulang",
-                      style: GoogleFonts.poppins(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ],
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text("Verifikasi", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],

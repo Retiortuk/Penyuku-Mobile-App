@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:penyuku/forget_password_screen.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'register_screen.dart';
 import 'dashboard_screen.dart';
 import 'package:penyuku/controllers/auth_controller.dart';

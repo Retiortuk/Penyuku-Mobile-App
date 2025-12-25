@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 import 'package:penyuku/login_screen.dart';
 import 'package:penyuku/otp_screen.dart';
 
@@ -13,6 +14,70 @@ class ForgetPassword extends StatefulWidget {
 class _ForgetPasswordState extends State<ForgetPassword> {
 
   final TextEditingController _emailController = TextEditingController();
+  final AuthController _authController = AuthController();
+  bool _isLoading = false;
+
+
+  Future<void> _handleSubmit() async {
+    if (_emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Harap isi email Anda"), 
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ), 
+        ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _authController.sendRecoveryEmail(_emailController.text.trim());
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Kode OTP telah dikirim ke email Anda"), 
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          ),
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpScreen(email: _emailController.text.trim()),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        String errorMessage = e.toString().replaceAll("Exception: ", "");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage), 
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,16 +208,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                 width: 135.0,
                 height: 48,
                 child: ElevatedButton(
-                  onPressed: () {
-                    final email = _emailController.text;
-                    print("Login attempt: $email");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OtpScreen(),
-                      ),
-                    );
-                  },
+                  onPressed: _isLoading ? null : _handleSubmit,
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,
                     shape: RoundedRectangleBorder(
@@ -172,12 +228,18 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     ),
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(
-                        "Kirim OTP",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
+                      child: _isLoading 
+                        ? const SizedBox(
+                            height: 28,
+                            width: 28,
+                            child: CircularProgressIndicator(backgroundColor: Colors.white, strokeWidth: 2,),
+                          )
+                        : Text(
+                            "Kirim OTP",
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 15,
+                          ),
                       ),
                     ),
                   ),

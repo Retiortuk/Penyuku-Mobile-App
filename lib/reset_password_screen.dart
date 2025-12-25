@@ -1,185 +1,159 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 import 'package:penyuku/login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({super.key});
+  final String email; // Menerima email dari halaman OTP
+  const ResetPasswordScreen({super.key, required this.email});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _passController = TextEditingController();
+  final TextEditingController _confirmPassController = TextEditingController();
+  final AuthController _authController = AuthController();
+  
+  bool _isLoading = false;
+  bool _isObscure1 = true;
+  bool _isObscure2 = true;
 
-  final TextEditingController _passwordController = TextEditingController();
+  Future<void> _handleReset() async {
+    if (_passController.text.isEmpty || _confirmPassController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        content: Text("Isi kedua kolom password"), 
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+      )
+    );
+      return;
+    }
+
+    if (_passController.text != _confirmPassController.text) {
+      ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+        content: Text("Password tidak sama!"), 
+        backgroundColor: Colors.red,
+        behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+        )
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _authController.resetPassword(widget.email, _passController.text);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Password berhasil diubah! Silakan Login."), 
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          ),
+        );
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const LoginScreen()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll("Exception: ", "")), 
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        child: Stack(
-          children: [
-            Image.asset(
-              'assets/images/login_background.png',
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.cover,
-            ),
-
-            // Konten utama
-            Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 40),
-                    _buildForgetCard(context),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text("Buat Password Baru", style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        automaticallyImplyLeading: false, // Hilangkan tombol back karena tidak boleh mundur saat proses ini
       ),
-    );
-  }
+      body: Padding(
+        padding: const EdgeInsetsGeometry.only(
+          left: 24, 
+          right: 24,
+          top: 50
+        ),
 
-  Widget _buildForgetCard(BuildContext context) {
-    return Card(
-      elevation: 10,
-      shadowColor: Colors.black26,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back),
-                    iconSize: 28.0,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Opacity(
-                    opacity: 0.4,
-                    child: Text(
-                      "Kembali",
-                      style: GoogleFonts.poppins(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [
-                    Color.fromARGB(255, 16, 31, 53),
-                    Color.fromARGB(255, 65, 97, 145),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: [0.0, 1.0],
-                ).createShader(bounds),
-                child: Text(
-                  "Masukkan Password \nBaru Anda",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // Password
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Opacity(
-                opacity: 0.4,
-                child: Text(
-                  "Password Baru Anda",
-                  style: GoogleFonts.poppins(color: Colors.black, fontSize: 12),
-                ),
-              ),
-            ),
+            Text("Password Baru", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextFormField(
-              controller: _passwordController,
+              controller: _passController,
+              obscureText: _isObscure1,
               decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[100],
-                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                filled: true, fillColor: Colors.grey[100],
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                suffixIcon: IconButton(
+                  icon: Icon(_isObscure1 ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _isObscure1 = !_isObscure1),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
-
-            // Tombol Kirim OTP
-            Padding(
-              padding: EdgeInsetsGeometry.only(bottom: 15),
-              child: SizedBox(
-                width: 135.0,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final password = _passwordController.text;
-                    print("Login attempt: $password");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 3,
-                  ),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color.fromARGB(255, 16, 31, 53),
-                          Color.fromARGB(255, 65, 97, 145),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Reset",
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ),
-                  ),
+            const SizedBox(height: 20),
+            Text("Konfirmasi Password", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _confirmPassController,
+              obscureText: _isObscure2,
+              decoration: InputDecoration(
+                filled: true, fillColor: Colors.grey[100],
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                suffixIcon: IconButton(
+                  icon: Icon(_isObscure2 ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _isObscure2 = !_isObscure2),
                 ),
+              ),
+            ),
+            const SizedBox(height: 50),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _handleReset,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 16, 31, 53),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text("Simpan Password", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
               ),
             ),
           ],
