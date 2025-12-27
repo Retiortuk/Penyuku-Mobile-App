@@ -16,11 +16,10 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   bool _rememberMe = false;
   bool _isLoading =  false;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   final AuthController _authController = AuthController();
+  Map<String, dynamic>? _userData;
 
   Future<void> _handleLogin() async {
     if(_emailController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -44,17 +43,25 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     
     try {
-      final userData = await _authController.login(
+
+      await _authController.login(
         email: _emailController.text.trim(), 
         password: _passwordController.text
       );
 
-      print("Login Berhasil! Data User: $userData");
+      final freshData = await _authController.getUserData();
+      if (mounted) {
+        setState(() {
+          _userData = freshData;
+        });
+      }
+
+      print("Login Berhasil! Data User: $_userData");
 
       if(mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Selamat datang, ${userData['name']}!"), 
+            content: Text("Selamat datang, ${_userData?['name'] ?? 'User'}!"), 
             backgroundColor: Colors.green
           ),
         );

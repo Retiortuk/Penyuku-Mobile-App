@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:penyuku/login_screen.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,10 +12,38 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+
+  final AuthController _authController = AuthController();
+  Map<String, dynamic>? _userData;
+
+  @override
+  void initState () {
+    super.initState();
+    _loadProfile();
+  }
+
+  void _loadProfile() async {
+    final data = await _authController.getUserData();
+    setState(() {
+      _userData =  data;
+    });
+  }
+
+  void _handleLogout() async {
+    await _authController.logout();
+
+    if(mounted) {
+      Navigator.pushAndRemoveUntil(
+        context, 
+        MaterialPageRoute(builder: (context) => const LoginScreen()), 
+        (route) => false,
+      );
+    }
+  }
+
+
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
-
   final Color _greyText = const Color(0xFF555555);
-
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -52,7 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         const SizedBox(height: 16),
         Text(
-          "Kevin",
+          _userData?['name'] ?? 'User',
           style: GoogleFonts.poppins(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -61,21 +90,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          "@kevinmccallister_03",
+          "@${_userData?['username'] ?? '@user'}",
           style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
         ),
         const SizedBox(height: 4),
         Text(
-          "Member Sejak: 20/08/25",
+          "Member Sejak: ${_userData?['created_at']}",
           style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[500]),
         ),
         const SizedBox(height: 8),
         GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
+            _handleLogout();
           },
           child: Text(
             "Keluar",
