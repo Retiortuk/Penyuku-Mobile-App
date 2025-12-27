@@ -62,7 +62,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Selamat datang, ${_userData?['name'] ?? 'User'}!"), 
-            backgroundColor: Colors.green
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ), 
           ),
         );
 

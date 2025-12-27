@@ -1,8 +1,21 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ReportController {
   final SupabaseClient _supabase = Supabase.instance.client;
+
+  Future<String?> _getLocalUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? sessionData = prefs.getString('user_session');
+
+    if(sessionData != null) {
+      final userMap = jsonDecode(sessionData);
+      return userMap['id'];
+    }
+    return null;
+  }
 
   // Upload gambar ke storage supabase
   Future<String?> uploadImage(File imageFile) async {
@@ -29,13 +42,17 @@ class ReportController {
     File? imageFile,
   }) async {
     try {
-      String? imageUrl;
 
+      final userId = await _getLocalUserId();
+      if(userId == null) {
+        throw "Sesi Habis Silahkan Login Kembali";
+      }
+
+      String? imageUrl;
       if(imageFile != null) {
         imageUrl = await uploadImage(imageFile);
       }
 
-      final userId = _supabase.auth.currentUser?.id;
 
       await _supabase.from('reports').insert({
         'user_id': userId,
