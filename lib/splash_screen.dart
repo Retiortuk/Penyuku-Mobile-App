@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:penyuku/dashboard_screen.dart';
 import 'login_screen.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
@@ -10,16 +12,32 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final AuthController _authController = AuthController();
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () => _navigateToLogin());
+    _checkLoginStatus();
   }
 
-  _navigateToLogin() {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+  Future<void> _checkLoginStatus() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    bool isLoggedIn = await _authController.checkSession();
+
+    if(mounted) {
+      if(isLoggedIn) {
+        Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(builder: (context) => const DashboardScreen())
+        );
+      } else {
+        Navigator.pushReplacement(
+          context, 
+          MaterialPageRoute(builder: (context) => const LoginScreen())
+        );
+      }
+    }
   }
 
   Widget _buildCircle({
