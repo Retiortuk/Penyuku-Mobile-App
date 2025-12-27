@@ -6,6 +6,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ReportController {
   final SupabaseClient _supabase = Supabase.instance.client;
 
+  Future<List<Map<String, dynamic>>> getLaporan() async {
+    try {
+      final response = await _supabase
+      .from('reports').select().order('created_at', ascending: false);
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      throw "Gagal Mengambil Data: $e";
+    }
+  }
+
   Future<String?> _getLocalUserId() async {
     final prefs = await SharedPreferences.getInstance();
     String? sessionData = prefs.getString('user_session');

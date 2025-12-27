@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:penyuku/login_screen.dart';
 import 'package:penyuku/controllers/auth_controller.dart';
 
@@ -15,6 +16,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   final AuthController _authController = AuthController();
   Map<String, dynamic>? _userData;
+  bool _isLoading = true;
+  
+
 
   @override
   void initState () {
@@ -26,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final data = await _authController.getUserData();
     setState(() {
       _userData =  data;
+      _isLoading = false;
     });
   }
 
@@ -46,6 +51,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final Color _greyText = const Color(0xFF555555);
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
@@ -72,6 +83,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileHeader() {
+    DateTime createdDate = DateTime.parse(_userData?['created_at']).toLocal();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(createdDate);
     return Column(
       children: [
         CircleAvatar(
@@ -95,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          "Member Sejak: ${_userData?['created_at']}",
+          "Member Sejak: $formattedDate",
           style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[500]),
         ),
         const SizedBox(height: 8),

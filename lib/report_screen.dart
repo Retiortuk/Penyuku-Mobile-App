@@ -1,21 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:penyuku/controllers/report_controller.dart';
 import 'package:flutter/services.dart';
 import 'package:penyuku/report_overview_screen.dart';
 
-class Laporan {
-  final String id;
-  final String nama;
-  final String tanggal;
-  final String waktu;
-
-  Laporan({
-    required this.id,
-    required this.nama,
-    required this.tanggal,
-    required this.waktu,
-  });
-}
 
 class LaporanScreen extends StatefulWidget {
   const LaporanScreen({super.key});
@@ -25,52 +14,54 @@ class LaporanScreen extends StatefulWidget {
 }
 
 class _LaporanScreenState extends State<LaporanScreen> {
-  final List<Laporan> _laporanList = [
-    Laporan(
-      id: '#239487',
-      nama: 'Penyu Madura',
-      tanggal: '27/05/2025',
-      waktu: '07:40',
-    ),
-    Laporan(
-      id: '#239488',
-      nama: 'Penyu Hijau',
-      tanggal: '26/05/2025',
-      waktu: '09:30',
-    ),
-    Laporan(
-      id: '#239489',
-      nama: 'Penyu Sisik',
-      tanggal: '25/05/2025',
-      waktu: '07:40',
-    ),
-    Laporan(
-      id: '#239490',
-      nama: 'Penyu Lekang',
-      tanggal: '24/05/2025',
-      waktu: '07:40',
-    ),
-    Laporan(
-      id: '#239491',
-      nama: 'Penyu Pipih',
-      tanggal: '23/05/2025',
-      waktu: '07:40',
-    ),
-    Laporan(
-      id: '#239491',
-      nama: 'Penyu Wibu',
-      tanggal: '23/05/2025',
-      waktu: '07:40',
-    ),
-    Laporan(
-      id: '#239491',
-      nama: 'Penyu Telon',
-      tanggal: '23/05/2025',
-      waktu: '07:40',
-    ),
-  ];
-
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
+  final ReportController _controller = ReportController();
+
+  List<Map<String, dynamic>> _reports = [];
+  bool _isLoading = true;
+  int _totalTelur = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchReports();
+  }
+
+  Future<void> _fetchReports() async {
+    try {
+      final data =  await _controller.getLaporan();
+
+      int telurCount = 0;
+      for (var item in data) {
+        telurCount += (item['egg_count'] as int? ?? 0);
+      }
+
+      setState(() {
+        _reports = data;
+        _totalTelur = telurCount;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        print("DEBUG: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error: ${e.toString()}"),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -79,15 +70,21 @@ class _LaporanScreenState extends State<LaporanScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildBackButton(context),
-                _buildSummaryCards(),
-                _buildLaporanTitle(),
-                _buildLaporanList(),
-              ],
+          child: RefreshIndicator(
+            onRefresh: ()=>_fetchReports(),
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildBackButton(context),
+                  _buildSummaryCards(),
+                  _buildLaporanTitle(),
+                  _isLoading 
+                    ? const Center(child: Padding(padding: EdgeInsets.all(50), child: CircularProgressIndicator()))
+                    : _buildLaporanList(),
+                ],
+              ),
             ),
           ),
         ),
@@ -125,9 +122,9 @@ class _LaporanScreenState extends State<LaporanScreen> {
         children: [
           Expanded(
             child: _buildSummaryCard(
-              icon: Icons.shield_outlined,
-              title: "Total Penyu",
-              count: 20,
+              icon: Icons.assessment_outlined,
+              title: "Total Laporan",
+              count: _reports.length,
             ),
           ),
           const SizedBox(width: 16),
@@ -135,7 +132,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
             child: _buildSummaryCard(
               icon: Icons.egg_outlined,
               title: "Total Tukik",
-              count: 97,
+              count: _totalTelur,
             ),
           ),
         ],
@@ -170,13 +167,13 @@ class _LaporanScreenState extends State<LaporanScreen> {
             children: [
               Text(
                 title,
-                style: GoogleFonts.poppins(color: Colors.white70, fontSize: 12),
+                style: GoogleFonts.poppins(color: Colors.white70, fontSize: 10),
               ),
               Text(
                 count.toString(),
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 15,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -202,17 +199,38 @@ class _LaporanScreenState extends State<LaporanScreen> {
   }
 
   Widget _buildLaporanList() {
+
+    if (_reports.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(50.0),
+          child: Column(
+            children: [
+              Icon(Icons.folder_off_outlined, size: 50, color: Colors.grey[400]),
+              const SizedBox(height: 10),
+              Text("Belum ada laporan", style: GoogleFonts.poppins(color: Colors.grey)),
+            ],
+          ),
+        ),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
-        children: _laporanList.map((laporan) {
-          return _buildLaporanItem(laporan);
+        children: _reports.map((report) {
+          return _buildLaporanItem(report);
         }).toList(),
       ),
     );
   }
 
-  Widget _buildLaporanItem(Laporan laporan) {
+  Widget _buildLaporanItem(Map<String, dynamic> report) {
+    DateTime createdDate = DateTime.parse(report['created_at']).toLocal();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(createdDate);
+    String formattedTime = DateFormat('HH:mm').format(createdDate);
+    String shortId = "#${report['id'].toString().substring(0, 6)}";
+
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: InkWell(
@@ -221,6 +239,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => const LaporanOverviewScreen(),
+              // LaporanOverviewScreen(data: report)
             ),
           );
         },
@@ -249,7 +268,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                   children: [
                     // Tanggal & Waktu (Kecil, Abu-abu)
                     Text(
-                      "${laporan.tanggal} – ${laporan.waktu}",
+                      "$formattedDate – $formattedTime",
                       style: GoogleFonts.poppins(
                         color: Colors.grey[600],
                         fontSize: 12,
@@ -260,7 +279,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                     
                     // Nama Laporan (Bold, Biru Tua)
                     Text(
-                      laporan.nama,
+                      report['turtle_type'] ?? 'Jenis Penyu',
                       style: GoogleFonts.poppins(
                         color: _darkBlue,
                         fontWeight: FontWeight.bold,
@@ -270,7 +289,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
                     
                     // ID Laporan (Kecil, Abu-abu)
                     Text(
-                      "ID: ${laporan.id}",
+                      "ID: $shortId",
                       style: GoogleFonts.poppins(
                         color: Colors.grey[600],
                         fontSize: 12,
