@@ -5,6 +5,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'package:crypto/crypto.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -46,7 +47,7 @@ class AuthController {
   }
 
   // Login Logic
-  Future<Map<String, dynamic>> login({
+  Future<void> login({
     required String email,
     required String password,
   }) async {
@@ -63,17 +64,37 @@ class AuthController {
       if(response == null) {
         throw "Email Atau Password Salah!";
       }
-      return response;
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_session', jsonEncode(response));
     } catch (e) {
       throw e.toString();
     }
+  }
+
+  //Check Session User
+  Future<bool> checkSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.containsKey('user_session');
+  }
+
+  //Ambil data User
+  Future<Map<String, dynamic>?> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? data = prefs.getString('user_session');
+
+    if(data != null) {
+      return jsonDecode(data);
+    }
+    return null;
   }
 
   User? get currentUser => _supabase.auth.currentUser;
 
   // Logout Logic
   Future<void> logout() async {
-    await _supabase.auth.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_session');
   }
 
   // Forget Password
