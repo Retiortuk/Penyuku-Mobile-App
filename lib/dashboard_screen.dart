@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:penyuku/about_us_screen.dart';
 import 'package:penyuku/report_screen.dart';
 import 'package:penyuku/statistic_screen.dart';
+import 'package:penyuku/controllers/auth_controller.dart';
 import 'input_report_screen.dart';
 import 'education_screen.dart';
 import 'comunity_screen.dart';
@@ -17,14 +18,15 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   late PageController _pageController;
-
+  final AuthController _authController = AuthController();
+  Map<String, dynamic>? _userData;
   int _currentPageIndex = 1;
-
   int _bottomNavIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadProfile();
     _pageController = PageController(initialPage: 1, viewportFraction: 0.8);
   }
 
@@ -32,6 +34,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _loadProfile() async {
+    final data =  await _authController.getUserData();
+    setState(() {
+      _userData = data;
+    });
   }
 
   @override
@@ -254,7 +263,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Halo, Kevin",
+            "Halo, ${_userData?['name'] ?? 'User'}",
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontWeight: FontWeight.bold,
