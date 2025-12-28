@@ -113,33 +113,16 @@ class LaporanOverviewScreen extends StatelessWidget {
     );
   }
 
-  // void _showDownloadToast(BuildContext context) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(
-  //         "Laporan PDF berhasil diunduh!",
-  //         style: GoogleFonts.poppins(color: Colors.white),
-  //       ),
-  //       backgroundColor: Colors.green, 
-  //       behavior: SnackBarBehavior.floating,
-  //       margin: const EdgeInsets.all(16),
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(10.0),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
-    // Format Tanggal untuk Tampilan HP
     DateTime createdDate = DateTime.parse(reportData['created_at']).toLocal();
     String formattedDate = DateFormat('dd MMMM yyyy, HH:mm').format(createdDate);
     String foundDateStr = DateFormat('dd MMMM yyyy').format(DateTime.parse(reportData['found_date']).toLocal());
     String shortId = "#${reportData['id'].toString().substring(0, 8)}";
 
     return Scaffold(
-      backgroundColor: Colors.grey[100], // Background abu agar kertas putih terlihat kontras
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text("Detail Laporan", style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
@@ -150,7 +133,6 @@ class LaporanOverviewScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            // KERTAS DOKUMEN (Visual Representation)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
@@ -174,7 +156,6 @@ class LaporanOverviewScreen extends StatelessWidget {
                   ),
                   const Divider(height: 30, thickness: 1),
 
-                  // ID & Tanggal
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -196,7 +177,6 @@ class LaporanOverviewScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
-                  // Gambar Bukti
                   if (reportData['image_url'] != null)
                     Container(
                       height: 180,
@@ -223,7 +203,6 @@ class LaporanOverviewScreen extends StatelessWidget {
                   
                   const SizedBox(height: 24),
                   
-                  // Detail Data (Tabel Rapi)
                   Text("Data Penemuan", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 10),
                   _buildDetailRow("Jenis Penyu", reportData['turtle_type'] ?? '-'),
@@ -246,7 +225,6 @@ class LaporanOverviewScreen extends StatelessWidget {
                               style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: 13)
                             ),
                             const SizedBox(height: 4),
-                            // Link ke Google Maps
                             GestureDetector(
                               onTap: _launchMaps,
                               child: Row(
@@ -290,7 +268,6 @@ class LaporanOverviewScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // TOMBOL DOWNLOAD PDF
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -311,7 +288,6 @@ class LaporanOverviewScreen extends StatelessWidget {
     );
   }
 
-  // Widget Helper untuk Baris Data di Tampilan HP
   Widget _buildDetailRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -325,83 +301,3 @@ class LaporanOverviewScreen extends StatelessWidget {
     );
   }
 }
-
-//   Widget _buildBackButton(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.only(top: 20.0, left: 16.0),
-//       child: Material(
-//         color: _darkBlue,
-//         borderRadius: BorderRadius.circular(24),
-//         elevation: 4,
-//         child: InkWell(
-//           borderRadius: BorderRadius.circular(24),
-//           onTap: () {
-//             Navigator.of(context).pop(); 
-//           },
-//           child: Container(
-//             width: 50,
-//             height: 40,
-//             alignment: Alignment.center,
-//             child: const Icon(Icons.arrow_back, color: Colors.white),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildDetailCard() {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-//       child: Container(
-//         width: double.infinity,
-//         padding: const EdgeInsets.all(24.0),
-//         decoration: BoxDecoration(
-//           color: Colors.white, 
-//           borderRadius: BorderRadius.circular(12), 
-//         ),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start, 
-//           children: [
-//             Container(
-//               height: 500,
-//               width: double.infinity,
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 image: DecorationImage(
-//                   image: AssetImage('assets/images/laporan_penyu.png'),
-//                   fit: BoxFit.contain
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget _buildDownloadButton(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.all(24.0),
-//       child: ElevatedButton(
-//         onPressed: () {
-//           _showDownloadToast(context);
-//         },
-//         style: ElevatedButton.styleFrom(
-//           backgroundColor: _darkBlue,
-//           minimumSize: const Size(double.infinity, 50),
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(15),
-//           ),
-//           elevation: 4,
-//         ),
-//         child: Text(
-//           "Download Laporan",
-//           style: GoogleFonts.poppins(
-//             color: Colors.white,
-//             fontSize: 16,
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
