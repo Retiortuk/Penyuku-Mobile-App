@@ -1,111 +1,197 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:penyuku/controllers/activity_controller.dart';
 
-class AddAktivitasScreen extends StatefulWidget {
-  const AddAktivitasScreen({super.key});
+class AddActivityScreen extends StatefulWidget {
+  const AddActivityScreen({super.key});
 
   @override
-  State<AddAktivitasScreen> createState() => _AddAktivitasScreenState();
+  State<AddActivityScreen> createState() => _AddActivityScreenState();
 }
 
-class _AddAktivitasScreenState extends State<AddAktivitasScreen> {
-  final TextEditingController _namaController = TextEditingController();
-  final TextEditingController _taglineController = TextEditingController();
-  final TextEditingController _deskripsiControlller = TextEditingController();
+class _AddActivityScreenState extends State<AddActivityScreen> {
+  final ActivityController _controller = ActivityController();
+  final _formKey = GlobalKey<FormState>();
 
-  final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _subtitleController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
+  final TextEditingController _btnTextController = TextEditingController();
 
-  @override
-  void dispose() {
-    _namaController.dispose();
-    _taglineController.dispose();
-    _deskripsiControlller.dispose();
-    super.dispose();
+  File? _thumbnailImage;
+  List<File> _galleryImages = [];
+  bool _isLoading = false;
+
+  Future<void> _pickThumbnail() async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      setState(() => _thumbnailImage = File(picked.path));
+    }
   }
 
-  void _handleSubmit() {
-    print("Nama Aktivitas: ${_namaController.text}");
-    print("Tagline Aktivitas: ${_taglineController}");
+  Future<void> _pickGallery() async {
+    final picker = ImagePicker();
+    final pickedList = await picker.pickMultiImage(); 
+    if (pickedList.isNotEmpty) {
+      setState(() {
+        _galleryImages.addAll(pickedList.map((e) => File(e.path)).toList());
+      });
+    }
+  }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Aktivitas Berhasil Ditambahkan!",
-          style: GoogleFonts.poppins(color: Colors.white),
-        ),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16.0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-    Navigator.pop(context);
+  Future<void> _handleSubmit() async {
+    if (!_formKey.currentState!.validate()) return;
+    
+    setState(() => _isLoading = true);
+
+    try {
+      await _controller.submitActivity(
+        title: _titleController.text,
+        subtitle: _subtitleController.text,
+        description: _descController.text,
+        buttonText: _btnTextController.text,
+        thumbnailFile: _thumbnailImage,
+        galleryFiles: _galleryImages,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: 
+            Text("Aktivitas Berhasil Ditambahkan!"), 
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          ));
+        Navigator.pop(context, true); 
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: 
+          Text("Error: $e"), 
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ), 
+        ));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Tambah Aktivitas", style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildBackButton(context),
-              const SizedBox(height: 24),
-              _buildSectionLabel("Upload Thumbnail Aktivitas"),
-              const SizedBox(height: 12),
-              _buildUploadBox(height: 180),
-              const SizedBox(height: 24),
-              // Input Nama Aktivitas
-              _buildTextField(
-                label: "Nama Aktivitas", 
-                controller: _namaController, 
-                hint: "Masukan nama aktivitas"
+              Text("Thumbnail Utama", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+              const SizedBox(height: 8),
+              GestureDetector(
+                onTap: _pickThumbnail,
+                child: Container(
+                  height: 150,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300),
+                    image: _thumbnailImage != null 
+                      ? DecorationImage(image: FileImage(_thumbnailImage!), fit: BoxFit.cover)
+                      : null
+                  ),
+                  child: _thumbnailImage == null 
+                    ? const Center(child: Icon(Icons.add_a_photo, color: Colors.grey, size: 40)) 
+                    : null,
+                ),
               ),
-              const SizedBox(height: 16),
-              // Input Tagline
-              _buildTextField(
-                label: "Deskripsi Singkat", 
-                controller: _taglineController, 
-                hint: "Masukan deskripsi singkat"
+              const SizedBox(height: 20),
+
+              _buildTextField("Judul Aktivitas", _titleController),
+              _buildTextField("Subtitle / Tagline", _subtitleController),
+              _buildTextField("Deskripsi Lengkap", _descController, maxLines: 4),
+              _buildTextField("Teks Tombol (Cth: Daftar)", _btnTextController),
+
+              const SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("Galeri Foto", style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
+                  TextButton.icon(
+                    onPressed: _pickGallery,
+                    icon: const Icon(Icons.add),
+                    label: const Text("Tambah Foto"),
+                  )
+                ],
               ),
-              const SizedBox(height: 16),
-              // Input Deskripsi
-              _buildTextField(
-                label: "Deskripsi Aktivitas Dan Tanggal", 
-                controller: _taglineController, 
-                hint: "Masukan deskripsi secara detail",
-                maxLines: 5,
-              ),
-              const SizedBox(height: 24),
-              _buildSectionLabel("Upload Thumbnail Aktivitas"),
-              const SizedBox(height: 12),
-              _buildUploadBox(height: 150),
+              if (_galleryImages.isNotEmpty)
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _galleryImages.length,
+                    itemBuilder: (context, index) {
+                      return Stack(
+                        children: [
+                          Container(
+                            width: 100,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(image: FileImage(_galleryImages[index]), fit: BoxFit.cover),
+                            ),
+                          ),
+                          Positioned(
+                            right: 0,
+                            top: 0,
+                            child: GestureDetector(
+                              onTap: () => setState(() => _galleryImages.removeAt(index)),
+                              child: const CircleAvatar(radius: 10, backgroundColor: Colors.red, child: Icon(Icons.close, size: 12, color: Colors.white)),
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              
               const SizedBox(height: 40),
-              // Button buat add aktivitas
+
               SizedBox(
                 width: double.infinity,
-                height: 40,
+                height: 50,
                 child: ElevatedButton(
-                  onPressed: _handleSubmit, 
+                  onPressed: _isLoading ? null : _handleSubmit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: _darkBlue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(15)
-                    )
+                    backgroundColor: const Color(0xFF1A2B45),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text(
-                    "Tambah Aktivitas",
-                    style: GoogleFonts.poppins(
-                      color: Colors.white, 
-                      fontSize: 12, 
-                      fontWeight: FontWeight.bold
-                    ),
-                  )
+                  child: _isLoading 
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text("Publikasikan Aktivitas", style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -113,114 +199,27 @@ class _AddAktivitasScreenState extends State<AddAktivitasScreen> {
     );
   }
 
-  Widget _buildBackButton(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.pop(context),
-      child: Container(
-        width: 50,
-        height: 40,
-        decoration: BoxDecoration(
-          color: _darkBlue,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        child: Icon(Icons.arrow_back, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildSectionLabel(String text) {
-    return Text(
-      text,
-      style: GoogleFonts.poppins(
-        fontSize: 14,
-        fontWeight: FontWeight.bold,
-        color: _darkBlue,
-      ),
-    );
-  }
-
-  Widget _buildUploadBox({required double height}) {
-    return GestureDetector(
-      onTap: () {
-        print("Upload Gambar Di Tap");
-      },
-      child: Container(
-        height: height,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: const Color(0xFFD9D9D9).withOpacity(0.5),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: _darkBlue, width: 2),
-              ),
-              child: Icon(Icons.add, color: _darkBlue, size: 32),
+  Widget _buildTextField(String label, TextEditingController controller, {int maxLines = 1}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
+          const SizedBox(height: 6),
+          TextFormField(
+            controller: controller,
+            maxLines: maxLines,
+            validator: (val) => val!.isEmpty ? "Wajib diisi" : null,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey[50],
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
+              enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide(color: Colors.grey.shade300)),
             ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.camera_alt_outlined,
-                  color: Colors.grey[700],
-                  size: 20,
-                ),
-                const SizedBox(width: 12),
-                Icon(Icons.image_outlined, color: Colors.grey[700], size: 20),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    required String hint,
-    int maxLines = 1,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF333333), 
           ),
-        ),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: controller,
-          maxLines: maxLines,
-          style: GoogleFonts.poppins(fontSize: 14),
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: GoogleFonts.poppins(color: Colors.grey[400], fontSize: 12),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey), 
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: _darkBlue, width: 1.5),
-            ),
-            filled: true,
-            fillColor: Colors.white, 
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:penyuku/add_activity_screen.dart';
-import 'comunity_overview.dart';
+import 'package:penyuku/controllers/activity_controller.dart';
+import 'comunity_overview.dart'; 
 
 class KomunitasCardData {
+  final String id;
   final String title;
   final String subtitle;
   final String headerImageUrl;
@@ -13,10 +15,11 @@ class KomunitasCardData {
   final String buttonText;
 
   KomunitasCardData({
+    required this.id,
     required this.title,
     required this.subtitle,
     required this.headerImageUrl,
-    this.secondaryImageUrl = 'assets/images/penyu-tentang.jpg',
+    this.secondaryImageUrl = 'assets/images/penyu-tentang.jpg', 
     required this.description,
     required this.galleryImages,
     required this.buttonText,
@@ -34,65 +37,25 @@ class _KomunitasScreenState extends State<KomunitasScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _chatController = TextEditingController();
+  final ActivityController _activityController = ActivityController();
+  
+  List<Map<String, dynamic>> _activities = [];
+  bool _isLoading = true;
 
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
-
-  final List<KomunitasCardData> _cardList = [
-    KomunitasCardData(
-      title: 'Jadi Relawan Inti',
-      subtitle: 'Naik Level: Jadi Relawan Inti',
-      headerImageUrl: 'assets/images/jadi-relawan-inti.png',
-      description:
-          'Naik level dan jadilah relawan inti! Anda akan belajar cara menangani telur, merawat tukik, dan berpartisipasi langsung dalam aksi pelestarian yang lebih mendalam.',
-      galleryImages: [
-        'assets/images/relawan-inti-1.png',
-        'assets/images/relawan-inti-2.jpeg',
-        'assets/images/relawan-inti-3.jpeg',
-      ],
-      buttonText: 'Daftar Jadi Relawan',
-    ),
-    KomunitasCardData(
-      title: 'Turun Tangan',
-      subtitle: 'Kalender Aksi Kita',
-      headerImageUrl: 'assets/images/turun-tangan.png',
-      description:
-          'Lihat jadwal aksi bersih-bersih pantai, pelepasan tukik, dan edukasi yang akan datang. Kehadiranmu sangat berarti bagi kami dan para penyu!',
-      galleryImages: [
-        'assets/images/turun-tangan-1.png',
-        'assets/images/turun-tangan-2.jpg',
-        'assets/images/turun-tangan-3.jpg',
-      ],
-      buttonText: 'Ajukan Turun Tangan',
-    ),
-    KomunitasCardData(
-      title: 'Galeri Aksi Komunitas',
-      subtitle: '"bukti" kalau komunitas ini beneran ada dan seru.',
-      headerImageUrl: 'assets/images/galeri-aksi-komunitas.png',
-      description:
-          'Mulai Berperan Penting Dalam Penyelamatan Penyu, Dengan Menjadi Salah Satu Komunitas Dari Penyuku.',
-      galleryImages: [
-        'assets/images/galeri-komunitas.png',
-        'assets/images/galeri-komunitas2.png.jpg',
-        'assets/images/galeri-komunitas3.jpg',
-      ],
-      buttonText: 'Gabung Komunitas',
-    ),
-  ];
 
   final List<Map<String, String>> _pengajuanList = [
     {'title': 'Jadi Relawan Inti', 'email': 'user: auliagazzam@gmail.com'},
     {'title': 'Jadi Relawan Inti', 'email': 'user: ghazazidane@gmail.com'},
     {'title': 'Turun Tangan', 'email': 'user: satriaramdhn@gmail.com'},
-    {
-      'title': 'Galeri Aksi Komunitas',
-      'email': 'user: kelvinferdinnd@gmail.com',
-    },
+    {'title': 'Galeri Aksi Komunitas', 'email': 'user: kelvinferdinnd@gmail.com'},
     {'title': 'Galeri Aksi Komunitas', 'email': 'user: kevinjnsn@gmail.com'},
   ];
 
   @override
   void initState() {
     super.initState();
+    _fetchActivities();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       setState(() {});
@@ -105,74 +68,42 @@ class _KomunitasScreenState extends State<KomunitasScreen>
     super.dispose();
   }
 
+  Future<void> _fetchActivities() async {
+    try {
+      final data = await _activityController.getActivities();
+      setState(() {
+        _activities = data;
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Gagal load data: $e"),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   void _showConfirmationDialog() {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          title: Text(
-            "Konfirmasi",
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 25, 44, 71),
-            ),
-          ),
-          content: Text(
-            "Apakah Anda yakin ingin menerima pengajuan ini?",
-            style: GoogleFonts.poppins(),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          title: Text("Konfirmasi", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: _darkBlue)),
+          content: Text("Apakah Anda yakin ingin menerima pengajuan ini?", style: GoogleFonts.poppins()),
           actions: [
-            Container(
-              height: 1,
-              color: Colors.grey[300],
-              margin: const EdgeInsets.only(top: 20),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    child: Text(
-                      "Tidak",
-                      style: GoogleFonts.poppins(color: Colors.redAccent),
-                    ),
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                    },
-                  ),
-                ),
-                Container(width: 1, height: 40, color: Colors.grey[300]),
-                Expanded(
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    child: Text(
-                      "Iya",
-                      style: GoogleFonts.poppins(
-                        color: const Color.fromARGB(255, 25, 44, 71),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(dialogContext).pop();
-                      _handleAcc();
-                    },
-                  ),
-                ),
-              ],
+            TextButton(
+              child: Text("Iya", style: GoogleFonts.poppins(color: _darkBlue, fontWeight: FontWeight.bold)),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _handleAcc();
+              },
             ),
           ],
         );
@@ -181,22 +112,8 @@ class _KomunitasScreenState extends State<KomunitasScreen>
   }
 
   void _handleAcc() {
-    print("Meng Acc pengajuan user");
-
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Berhasil Menerima Pengajuan User!",
-          style: GoogleFonts.poppins(color: Colors.white),
-        ),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.green,
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
+      const SnackBar(content: Text("Berhasil Menerima Pengajuan User!"), backgroundColor: Colors.green),
     );
   }
 
@@ -204,29 +121,26 @@ class _KomunitasScreenState extends State<KomunitasScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       floatingActionButton: _tabController.index == 0
           ? Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                color: _darkBlue,
-                borderRadius: BorderRadius.circular(16),
-              ),
+              height: 60, width: 60,
+              decoration: BoxDecoration(color: _darkBlue, borderRadius: BorderRadius.circular(16)),
               child: IconButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  final result = await Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const AddAktivitasScreen(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const AddActivityScreen()),
                   );
+                  if (result == true) {
+                    setState(() => _isLoading = true);
+                    _fetchActivities();
+                  }
                 },
                 icon: const Icon(Icons.add, color: Colors.white, size: 32),
               ),
             )
           : null,
-
+      
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,34 +149,18 @@ class _KomunitasScreenState extends State<KomunitasScreen>
               padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
               child: Text(
                 'Komunitas Penyuku.',
-                style: GoogleFonts.poppins(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: _darkBlue,
-                ),
+                style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: _darkBlue),
               ),
             ),
-
             Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-              ),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.grey[200]!))),
               child: TabBar(
                 controller: _tabController,
                 labelColor: _darkBlue,
                 unselectedLabelColor: Colors.grey[400],
                 indicatorColor: _darkBlue,
                 indicatorWeight: 3,
-                labelStyle: GoogleFonts.poppins(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-                unselectedLabelStyle: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12,
-                ),
-                overlayColor: WidgetStateProperty.all(Colors.transparent),
-                labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+                labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 12),
                 tabs: const [
                   Tab(text: 'Aktivitas'),
                   Tab(text: 'Pengajuan'),
@@ -270,15 +168,12 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                 ],
               ),
             ),
-
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
                   _buildAktivitasList(),
-
                   _buildPengajuanList(),
-
                   _buildChatTab(),
                 ],
               ),
@@ -290,26 +185,65 @@ class _KomunitasScreenState extends State<KomunitasScreen>
   }
 
   Widget _buildAktivitasList() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_activities.isEmpty) {
+      return Center(child: Text("Belum ada aktivitas komunitas.", style: GoogleFonts.poppins()));
+    }
+    
     return ListView.builder(
-      padding: const EdgeInsets.only(top: 16, bottom: 16),
-      itemCount: _cardList.length,
+      padding: const EdgeInsets.all(16),
+      itemCount: _activities.length,
       itemBuilder: (context, index) {
-        return _buildKomunitasCard(_cardList[index]);
+        final item = _activities[index];
+
+        final data = KomunitasCardData(
+          id: item['id'].toString(),
+          title: item['title'] ?? 'Tanpa Judul',
+          subtitle: item['subtitle'] ?? 'Event',
+          
+          headerImageUrl: item['thumbnail_url'] ?? '', 
+          
+          description: item['description'] ?? '',
+          
+          galleryImages: (item['gallery_urls'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ?? [],
+              
+          buttonText: item['button_text'] ?? 'Selengkapnya',
+        );
+
+        return _buildKomunitasCard(data);
       },
     );
   }
 
   Widget _buildKomunitasCard(KomunitasCardData data) {
+    
+    ImageProvider imageProvider;
+    if (data.headerImageUrl.startsWith('http')) {
+      imageProvider = NetworkImage(data.headerImageUrl);
+    } else {
+      imageProvider = const AssetImage('assets/images/placeholder.png'); 
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => EventOverviewScreen(eventData: data),
             ),
           );
+
+          if(result==true) {
+            setState(() => _isLoading = true);
+            _fetchActivities();
+          }
         },
         child: Container(
           height: 180,
@@ -317,7 +251,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
-              image: AssetImage(data.headerImageUrl),
+              image: imageProvider, 
               fit: BoxFit.cover,
             ),
             boxShadow: [
@@ -346,58 +280,36 @@ class _KomunitasScreenState extends State<KomunitasScreen>
               ),
 
               Positioned(
-                top: 20,
-                left: 20,
-                right: 20,
+                top: 20, left: 20, right: 20,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       data.title,
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: GoogleFonts.poppins(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       data.subtitle,
-                      style: GoogleFonts.poppins(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      style: GoogleFonts.poppins(color: Colors.white.withOpacity(0.9), fontSize: 12, fontWeight: FontWeight.w500),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
-
               Positioned(
-                bottom: 16,
-                right: 16,
+                bottom: 16, right: 16,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 6,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.5),
-                      width: 1,
-                    ),
+                    border: Border.all(color: Colors.white.withOpacity(0.5), width: 1),
                   ),
                   child: Text(
-                    "Selengkapnya",
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    data.buttonText,
+                    style: GoogleFonts.poppins(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),
@@ -434,41 +346,21 @@ class _KomunitasScreenState extends State<KomunitasScreen>
           child: Row(
             children: [
               Container(
-                width: 50,
-                height: 50,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
+                width: 50, height: 50,
+                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                 child: const Icon(Icons.person, color: Colors.black, size: 30),
               ),
               const SizedBox(width: 16),
-
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      data['title']!,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: _darkBlue,
-                      ),
-                    ),
+                    Text(data['title']!, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: _darkBlue)),
                     const SizedBox(height: 2),
-                    Text(
-                      data['email']!,
-                      style: GoogleFonts.poppins(
-                        fontSize: 12,
-                        color: _darkBlue.withOpacity(0.8),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    Text(data['email']!, style: GoogleFonts.poppins(fontSize: 12, color: _darkBlue.withOpacity(0.8)), overflow: TextOverflow.ellipsis),
                   ],
                 ),
               ),
-
               Icon(Icons.arrow_forward_ios_rounded, color: _darkBlue, size: 24),
             ],
           ),
@@ -480,6 +372,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
   Widget _buildChatTab() {
     return Column(
       children: [
+        // Header Chat
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -487,40 +380,22 @@ class _KomunitasScreenState extends State<KomunitasScreen>
           child: Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
+                width: 40, height: 40,
+                decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                 child: const Icon(Icons.circle, color: Colors.grey, size: 40),
               ),
               const SizedBox(width: 12),
-              Text(
-                "Komunitas Penyuku",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+              Text("Komunitas Penyuku", style: GoogleFonts.poppins(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500)),
             ],
           ),
         ),
-
-        Expanded(child: Container(color: const Color(0xFFD1D5DB))),
-
+        Expanded(child: Container(color: const Color(0xFFD1D5DB))), // Area Chat Kosong
+        // Input Chat
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 5,
-                offset: const Offset(0, -2),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, -2))],
           ),
           child: Row(
             children: [
@@ -528,19 +403,13 @@ class _KomunitasScreenState extends State<KomunitasScreen>
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   height: 45,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    borderRadius: BorderRadius.circular(24),
-                  ),
+                  decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(24)),
                   child: TextField(
                     controller: _chatController,
                     style: GoogleFonts.poppins(fontSize: 14),
                     decoration: InputDecoration(
                       hintText: "Ketik pesan disini...",
-                      hintStyle: GoogleFonts.poppins(
-                        color: Colors.grey[400],
-                        fontSize: 14,
-                      ),
+                      hintStyle: GoogleFonts.poppins(color: Colors.grey[400], fontSize: 14),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.only(bottom: 8),
                     ),
@@ -549,11 +418,7 @@ class _KomunitasScreenState extends State<KomunitasScreen>
               ),
               const SizedBox(width: 12),
               GestureDetector(
-                onTap: () {
-                  // TODO: Kirim Pesan
-                  print("Send: ${_chatController.text}");
-                  _chatController.clear();
-                },
+                onTap: () => _chatController.clear(),
                 child: Icon(Icons.send_rounded, color: _darkBlue, size: 28),
               ),
             ],
@@ -563,3 +428,4 @@ class _KomunitasScreenState extends State<KomunitasScreen>
     );
   }
 }
+

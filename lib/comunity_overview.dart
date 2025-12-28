@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penyuku/comunity_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:penyuku/comunity_screen.dart';
+import 'package:penyuku/controllers/activity_controller.dart'; 
 
 class EventOverviewScreen extends StatefulWidget {
   final KomunitasCardData eventData;
@@ -13,6 +14,10 @@ class EventOverviewScreen extends StatefulWidget {
 }
 
 class _EventOverviewScreenState extends State<EventOverviewScreen> {
+  final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
+  final Color _greyText = const Color(0xFF555555);
+  final ActivityController _activityController = ActivityController();
+
   void _showConfirmationDialog(String actionType) {
     String titleText = "Konfirmasi";
     String contentText = "Apakah Anda yakin dengan aksi ini?";
@@ -92,7 +97,6 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                         ),
                         onPressed: () {
                           Navigator.of(dialogContext).pop();
-
                           _handleAction(actionType);
                         },
                       ),
@@ -107,53 +111,66 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
     );
   }
 
-  void _handleAction(String actionType) {
+
+
+  Future<void> _handleAction(String actionType) async {
     String message = "";
     Color snackBarColor = Colors.green;
-    print("Berhasil Di Ajukan!");
 
     if (actionType == "delete") {
-      message = "Aktivitas berhasil dihapus";
-      snackBarColor = Colors.redAccent;
-    } else {
-      if (widget.eventData.title == 'Galeri Aksi Komunitas') {
-        message = 'Permintaan Gabung Komunitas Berhasil Diajukan!';
-      } else if (widget.eventData.title == 'Jadi Relawan Inti') {
-        message = 'Permintaan Jadi Relawan Berhasil Diajukan!';
-      } else if (widget.eventData.title == 'Turun Tangan') {
-        message = 'Pengajuan Turun Tangan Berhasil Diajukan';
-      } else {
-        message = 'Permintaan berhasil diajukan!';
+      try {
+        await _activityController.deleteActivity(widget.eventData.id);
+        
+        message = "Aktivitas berhasil dihapus";
+        snackBarColor = Colors.redAccent;
+
+        if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
+              backgroundColor: snackBarColor,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          
+          Navigator.pop(context, true); 
+        }
+        return; 
+
+      } catch (e) {
+        message = "Gagal menghapus: $e";
+        snackBarColor = Colors.red;
       }
+
+    } else {
+      message = "Permintaan '${widget.eventData.buttonText}' Berhasil Diajukan!";
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
-        duration: Duration(seconds: 4),
-        backgroundColor: snackBarColor,
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
+          backgroundColor: snackBarColor,
+          behavior: SnackBarBehavior.floating,
         ),
-      ),
-    );
-
-    if (actionType == 'delete') {
-      Navigator.pop(context);
+      );
     }
   }
 
-  final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
-  final Color _greyText = const Color(0xFF555555);
+  ImageProvider _getImageProvider(String url) {
+    if (url.startsWith('http')) {
+      return NetworkImage(url);
+    } else {
+      return AssetImage(url);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: Colors.white, 
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
             CustomScrollView(
@@ -167,14 +184,17 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                   stretch: true,
                   flexibleSpace: FlexibleSpaceBar(
                     stretchModes: const [StretchMode.zoomBackground],
-                    background: Image.asset(
-                      widget.eventData.headerImageUrl,
+                    background: Image(
+                      image: _getImageProvider(widget.eventData.headerImageUrl),
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(color: Colors.grey[300], child: const Icon(Icons.broken_image));
+                      },
                     ),
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: _buildContentSheet(context, widget.eventData),
+                  child: _buildContentSheet(context),
                 ),
               ],
             ),
@@ -201,6 +221,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                 ),
               ),
             ),
+            
             Positioned(
               top: 0, right: 0,
               child: SafeArea(
@@ -238,7 +259,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                     ),
                   ],
                 ),
-                child: SafeArea( 
+                child: SafeArea(
                   top: false,
                   child: ElevatedButton(
                     onPressed: () {
@@ -256,7 +277,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                       widget.eventData.buttonText,
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 16, 
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -270,7 +291,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
     );
   }
 
-  Widget _buildContentSheet(BuildContext context, KomunitasCardData data) {
+  Widget _buildContentSheet(BuildContext context) {
     return Container(
       transform: Matrix4.translationValues(0.0, -20.0, 0.0),
       decoration: const BoxDecoration(
@@ -297,7 +318,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  data.title,
+                  widget.eventData.title,
                   style: GoogleFonts.poppins(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -307,7 +328,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                 const SizedBox(height: 16),
 
                 Text(
-                  data.description,
+                  widget.eventData.description,
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     color: _greyText,
@@ -315,27 +336,30 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Container(
-                  height: 120,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: data.galleryImages.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        width: 120,
-                        margin: const EdgeInsets.only(right: 12.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                            image: AssetImage(data.galleryImages[index]),
-                            fit: BoxFit.cover,
+                
+                if (widget.eventData.galleryImages.isNotEmpty)
+                  SizedBox(
+                    height: 120,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: widget.eventData.galleryImages.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 120,
+                          margin: const EdgeInsets.only(right: 12.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            image: DecorationImage(
+                              image: _getImageProvider(widget.eventData.galleryImages[index]),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 60),
+                
+                const SizedBox(height: 60), 
               ],
             ),
           ),

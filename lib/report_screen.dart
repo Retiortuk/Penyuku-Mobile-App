@@ -239,7 +239,6 @@ class _LaporanScreenState extends State<LaporanScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => LaporanOverviewScreen(reportData: report),
-              // LaporanOverviewScreen(data: report)
             ),
           );
         },
@@ -247,26 +246,23 @@ class _LaporanScreenState extends State<LaporanScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
           decoration: BoxDecoration(
-            color: const Color(0xFFD1D5DB).withOpacity(0.5), // Warna abu-abu background card
+            color: const Color(0xFFD1D5DB).withOpacity(0.5),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Icon Dokumen (Clipboard)
               Icon(
-                Icons.assignment_outlined, // Icon clipboard
+                Icons.assignment_outlined, 
                 color: _darkBlue,
                 size: 32,
               ),
               const SizedBox(width: 16),
 
-              // Kolom Teks (Tanggal, Judul, ID)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Tanggal & Waktu (Kecil, Abu-abu)
                     Text(
                       "$formattedDate – $formattedTime",
                       style: GoogleFonts.poppins(
@@ -277,7 +273,6 @@ class _LaporanScreenState extends State<LaporanScreen> {
                     ),
                     const SizedBox(height: 2),
                     
-                    // Nama Laporan (Bold, Biru Tua)
                     Text(
                       report['turtle_type'] ?? 'Jenis Penyu',
                       style: GoogleFonts.poppins(
@@ -287,7 +282,6 @@ class _LaporanScreenState extends State<LaporanScreen> {
                       ),
                     ),
                     
-                    // ID Laporan (Kecil, Abu-abu)
                     Text(
                       "ID: $shortId",
                       style: GoogleFonts.poppins(
@@ -299,7 +293,6 @@ class _LaporanScreenState extends State<LaporanScreen> {
                 ),
               ),
 
-              // Panah Kanan
               Icon(
                 Icons.arrow_forward_ios_rounded, 
                 color: _darkBlue, 
