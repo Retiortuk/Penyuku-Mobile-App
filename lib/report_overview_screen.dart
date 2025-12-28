@@ -4,13 +4,27 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LaporanOverviewScreen extends StatelessWidget {
   final Map<String, dynamic> reportData;
 
   const LaporanOverviewScreen({super.key, required this.reportData});
 
-  // final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
+  Future<void> _launchMaps() async {
+    final lat = reportData['latitude'];
+    final long =  reportData['longitude'];
+
+    final Uri googleMapsUrl = Uri.parse("https://www.google.com/maps/search/?api=1&query=$lat,$long");
+
+    try {
+      if(!await launchUrl(googleMapsUrl, mode: LaunchMode.externalApplication)) {
+        throw 'Could not open maps';
+      } 
+    } catch (e) {
+      debugPrint('Error launching maps: $e');
+    }
+  }
 
   Future<void> _generatePdf(BuildContext context) async {
     final pdf = pw.Document();
@@ -154,8 +168,8 @@ class LaporanOverviewScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("PENYUKU", style: GoogleFonts.kronaOne(fontSize: 18, color: const Color(0xFF1A2B45))),
-                      Text("RECEIPT", style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey, letterSpacing: 2)),
+                      Text("Penyuku", style: GoogleFonts.kronaOne(fontSize: 18, color: const Color(0xFF1A2B45))),
+                      Text("Pelaporan", style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey, letterSpacing: 2)),
                     ],
                   ),
                   const Divider(height: 30, thickness: 1),
@@ -210,13 +224,52 @@ class LaporanOverviewScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                   
                   // Detail Data (Tabel Rapi)
-                  Text("Detail Konservasi", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
+                  Text("Data Penemuan", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 10),
                   _buildDetailRow("Jenis Penyu", reportData['turtle_type'] ?? '-'),
                   _buildDetailRow("Jenis Kelamin", reportData['gender'] ?? '-'),
                   _buildDetailRow("Jumlah Telur", "${reportData['egg_count']} Butir"),
                   _buildDetailRow("Tgl Ditemukan", foundDateStr),
-                  _buildDetailRow("Koordinat", "${reportData['latitude']}, ${reportData['longitude']}"),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Koordinat", style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 13)),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "${reportData['latitude']}, ${reportData['longitude']}",
+                              style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: 13)
+                            ),
+                            const SizedBox(height: 4),
+                            // Link ke Google Maps
+                            GestureDetector(
+                              onTap: _launchMaps,
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.map, size: 14, color: Colors.blueAccent),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    "Lihat di Google Maps", 
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.blueAccent, 
+                                      fontSize: 11, 
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline
+                                    )
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
 
                   const SizedBox(height: 20),
                   Divider(
@@ -226,7 +279,7 @@ class LaporanOverviewScreen extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      "Terima kasih telah berkontribusi menjaga ekosistem laut.",
+                      "KONSERVASI PENYU CILACAP \nJl. Seloka Maya, Sawah,Ladang, Karangbenda, Kec. Adipala, Kabupaten Cilacap, Jawa Tengah 53271",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey, fontStyle: FontStyle.italic),
                     ),
