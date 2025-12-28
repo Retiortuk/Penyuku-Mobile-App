@@ -238,7 +238,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const LaporanOverviewScreen(),
+              builder: (context) => LaporanOverviewScreen(reportData: report),
               // LaporanOverviewScreen(data: report)
             ),
           );

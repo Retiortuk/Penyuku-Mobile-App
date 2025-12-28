@@ -1,103 +1,254 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class LaporanOverviewScreen extends StatelessWidget {
-  const LaporanOverviewScreen({super.key});
+  final Map<String, dynamic> reportData;
 
-  final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
+  const LaporanOverviewScreen({super.key, required this.reportData});
 
-  void _showDownloadToast(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Laporan PDF berhasil diunduh!",
-          style: GoogleFonts.poppins(color: Colors.white),
-        ),
-        backgroundColor: Colors.green, 
-        behavior: SnackBarBehavior.floating,
-        margin: const EdgeInsets.all(16),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-      ),
-    );
-  }
+  // final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[350],
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+  Future<void> _generatePdf(BuildContext context) async {
+    final pdf = pw.Document();
+
+    final netImage = reportData['image_url'] != null
+      ? await networkImage(reportData['image_url'])
+      : null;
+
+    DateTime createdDate = DateTime.parse(reportData['created_at']).toLocal();
+    String dateStr = DateFormat('dd MMMM yyyy, HH:mm').format(createdDate);
+    String foundDateStr = DateFormat('dd MMMM yyyy').format(DateTime.parse(reportData['found_date']).toLocal());
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              // Header Dokumen
+              pw.Header(
+                level: 0,
+                child: pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildBackButton(context),
-                    const SizedBox(height: 20),
-                    _buildDetailCard(),
-                    const SizedBox(height: 20), 
+                    pw.Text("LAPORAN PENYUKU", style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                    pw.Text("ID: #${reportData['id'].toString().substring(0, 8)}", style: const pw.TextStyle(fontSize: 12)),
                   ],
                 ),
               ),
-            ),
-            
-            Container(
-              color: Colors.grey[350],
-              child: _buildDownloadButton(context),
-            ),
-          ],
-        ),
-      ),
+              pw.SizedBox(height: 20),
+
+              if (netImage != null)
+                pw.Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: pw.BoxDecoration(
+                    image: pw.DecorationImage(image: netImage, fit: pw.BoxFit.cover),
+                    borderRadius: pw.BorderRadius.circular(8),
+                  ),
+                ),
+              pw.SizedBox(height: 20),
+
+              pw.Table(
+                border: pw.TableBorder.all(color: PdfColors.grey300),
+                children: [
+                  _buildPdfRow("Tanggal Lapor", dateStr),
+                  _buildPdfRow("Jenis Penyu", reportData['turtle_type'] ?? '-'),
+                  _buildPdfRow("Jenis Kelamin", reportData['gender'] ?? '-'),
+                  _buildPdfRow("Jumlah Telur", "${reportData['egg_count']} Butir"),
+                  _buildPdfRow("Tanggal Ditemukan", foundDateStr),
+                  _buildPdfRow("Lokasi (Koordinat)", "${reportData['latitude']}, ${reportData['longitude']}"),
+                ],
+              ),
+
+              pw.SizedBox(height: 30),
+              pw.Divider(),
+              pw.Align(
+                alignment: pw.Alignment.centerRight,
+                child: pw.Text("Dicetak otomatis oleh Sistem PenyuKu", style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey)),
+              ),
+            ]          
+          );
+        }
+      )
+    );
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save(),
+      name: 'Laporan-Penyu-${reportData['id'].substring(0,6)}',
     );
   }
 
-  Widget _buildBackButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0, left: 16.0),
-      child: Material(
-        color: _darkBlue,
-        borderRadius: BorderRadius.circular(24),
-        elevation: 4,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(24),
-          onTap: () {
-            Navigator.of(context).pop(); 
-          },
-          child: Container(
-            width: 50,
-            height: 40,
-            alignment: Alignment.center,
-            child: const Icon(Icons.arrow_back, color: Colors.white),
-          ),
+  pw.TableRow _buildPdfRow(String label, String value) {
+    return pw.TableRow(
+      children: [
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(8),
+          child: pw.Text(label, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
         ),
-      ),
+        pw.Padding(
+          padding: const pw.EdgeInsets.all(8),
+          child: pw.Text(value),
+        ),
+      ],
     );
   }
 
-  Widget _buildDetailCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(24.0),
-        decoration: BoxDecoration(
-          color: Colors.white, 
-          borderRadius: BorderRadius.circular(12), 
-        ),
+  // void _showDownloadToast(BuildContext context) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text(
+  //         "Laporan PDF berhasil diunduh!",
+  //         style: GoogleFonts.poppins(color: Colors.white),
+  //       ),
+  //       backgroundColor: Colors.green, 
+  //       behavior: SnackBarBehavior.floating,
+  //       margin: const EdgeInsets.all(16),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(10.0),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    // Format Tanggal untuk Tampilan HP
+    DateTime createdDate = DateTime.parse(reportData['created_at']).toLocal();
+    String formattedDate = DateFormat('dd MMMM yyyy, HH:mm').format(createdDate);
+    String foundDateStr = DateFormat('dd MMMM yyyy').format(DateTime.parse(reportData['found_date']).toLocal());
+    String shortId = "#${reportData['id'].toString().substring(0, 8)}";
+
+    return Scaffold(
+      backgroundColor: Colors.grey[100], // Background abu agar kertas putih terlihat kontras
+      appBar: AppBar(
+        title: Text("Detail Laporan", style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, 
           children: [
+            // KERTAS DOKUMEN (Visual Representation)
             Container(
-              height: 500,
               width: double.infinity,
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.white,
-                image: DecorationImage(
-                  image: AssetImage('assets/images/laporan_penyu.png'),
-                  fit: BoxFit.contain
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header Dokumen
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("PENYUKU", style: GoogleFonts.kronaOne(fontSize: 18, color: const Color(0xFF1A2B45))),
+                      Text("RECEIPT", style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey, letterSpacing: 2)),
+                    ],
+                  ),
+                  const Divider(height: 30, thickness: 1),
+
+                  // ID & Tanggal
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("ID Laporan", style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey)),
+                          Text(shortId, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: const Color(0xFF1A2B45))),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text("Tanggal", style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey)),
+                          Text(formattedDate, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: const Color(0xFF1A2B45))),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Gambar Bukti
+                  if (reportData['image_url'] != null)
+                    Container(
+                      height: 180,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: NetworkImage(reportData['image_url']),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  else
+                    Container(
+                      height: 100,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text("Tidak ada gambar", style: GoogleFonts.poppins(color: Colors.grey)),
+                    ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Detail Data (Tabel Rapi)
+                  Text("Detail Konservasi", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const SizedBox(height: 10),
+                  _buildDetailRow("Jenis Penyu", reportData['turtle_type'] ?? '-'),
+                  _buildDetailRow("Jenis Kelamin", reportData['gender'] ?? '-'),
+                  _buildDetailRow("Jumlah Telur", "${reportData['egg_count']} Butir"),
+                  _buildDetailRow("Tgl Ditemukan", foundDateStr),
+                  _buildDetailRow("Koordinat", "${reportData['latitude']}, ${reportData['longitude']}"),
+
+                  const SizedBox(height: 20),
+                  Divider(
+                    color: Colors.grey[300],
+                    height: 20,
+                    thickness: 1,
+                  ),
+                  Center(
+                    child: Text(
+                      "Terima kasih telah berkontribusi menjaga ekosistem laut.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // TOMBOL DOWNLOAD PDF
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                onPressed: () => _generatePdf(context),
+                icon: const Icon(Icons.download_rounded, color: Colors.white),
+                label: Text("Download PDF", style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A2B45),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 5,
                 ),
               ),
             ),
@@ -107,29 +258,97 @@ class LaporanOverviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDownloadButton(BuildContext context) {
+  // Widget Helper untuk Baris Data di Tampilan HP
+  Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: ElevatedButton(
-        onPressed: () {
-          _showDownloadToast(context);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _darkBlue,
-          minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          elevation: 4,
-        ),
-        child: Text(
-          "Download Laporan",
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 13)),
+          Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.black87, fontSize: 13)),
+        ],
       ),
     );
   }
 }
+
+//   Widget _buildBackButton(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.only(top: 20.0, left: 16.0),
+//       child: Material(
+//         color: _darkBlue,
+//         borderRadius: BorderRadius.circular(24),
+//         elevation: 4,
+//         child: InkWell(
+//           borderRadius: BorderRadius.circular(24),
+//           onTap: () {
+//             Navigator.of(context).pop(); 
+//           },
+//           child: Container(
+//             width: 50,
+//             height: 40,
+//             alignment: Alignment.center,
+//             child: const Icon(Icons.arrow_back, color: Colors.white),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildDetailCard() {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 24.0),
+//       child: Container(
+//         width: double.infinity,
+//         padding: const EdgeInsets.all(24.0),
+//         decoration: BoxDecoration(
+//           color: Colors.white, 
+//           borderRadius: BorderRadius.circular(12), 
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start, 
+//           children: [
+//             Container(
+//               height: 500,
+//               width: double.infinity,
+//               decoration: BoxDecoration(
+//                 color: Colors.white,
+//                 image: DecorationImage(
+//                   image: AssetImage('assets/images/laporan_penyu.png'),
+//                   fit: BoxFit.contain
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildDownloadButton(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.all(24.0),
+//       child: ElevatedButton(
+//         onPressed: () {
+//           _showDownloadToast(context);
+//         },
+//         style: ElevatedButton.styleFrom(
+//           backgroundColor: _darkBlue,
+//           minimumSize: const Size(double.infinity, 50),
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(15),
+//           ),
+//           elevation: 4,
+//         ),
+//         child: Text(
+//           "Download Laporan",
+//           style: GoogleFonts.poppins(
+//             color: Colors.white,
+//             fontSize: 16,
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
