@@ -234,13 +234,17 @@ class _LaporanScreenState extends State<LaporanScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: InkWell(
-        onTap: () {
-          Navigator.push(
+        onTap: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => LaporanOverviewScreen(reportData: report),
             ),
           );
+          if(result == true) {
+            setState (() => _isLoading = true);
+            _fetchReports();
+          }
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(

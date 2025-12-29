@@ -6,6 +6,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ReportController {
   final SupabaseClient _supabase = Supabase.instance.client;
 
+  Future<void> deleteLaporan(String id) async {
+    try {
+      await _supabase.from('reports').delete().eq('id', id);
+    } catch (e) {
+      throw "Tidak Bisa Menghapus Laporan $e";
+    }
+  }
+  
   Future<List<Map<String, dynamic>>> getLaporan() async {
     try {
       final response = await _supabase

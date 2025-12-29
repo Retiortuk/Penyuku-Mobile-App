@@ -5,11 +5,13 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:penyuku/controllers/report_controller.dart';
 
 class LaporanOverviewScreen extends StatelessWidget {
   final Map<String, dynamic> reportData;
+  final ReportController _reportController = ReportController();
 
-  const LaporanOverviewScreen({super.key, required this.reportData});
+  LaporanOverviewScreen({super.key, required this.reportData});
 
   Future<void> _launchMaps() async {
     final lat = reportData['latitude'];
@@ -23,6 +25,73 @@ class LaporanOverviewScreen extends StatelessWidget {
       } 
     } catch (e) {
       debugPrint('Error launching maps: $e');
+    }
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context, 
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: Text(
+            "Hapus Laporan?",
+            style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: const Color(0xFF1A2B45))
+          ),
+          content: Text(
+            "Laporan ini akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.", 
+            style: GoogleFonts.poppins(fontSize: 14)
+          ),
+          actions: [
+            TextButton(
+              onPressed: ()=> Navigator.of(dialogContext).pop(), 
+              child: Text("Batal", style: GoogleFonts.poppins(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _handleDelete(context);
+              }, 
+              child: Text("Iya",style: GoogleFonts.poppins(color: Colors.red, fontWeight: FontWeight.bold))
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  Future<void> _handleDelete(BuildContext context) async {
+    try {
+      await _reportController.deleteLaporan(reportData['id'].toString());
+
+      if(context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Berhasil Menghapus Laporan', style: GoogleFonts.poppins(color: Colors.white),),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      if(context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll("Exception: ", ""), style: GoogleFonts.poppins(color: Colors.white),),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+      }
     }
   }
 
@@ -128,6 +197,16 @@ class LaporanOverviewScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            onPressed: () {
+              _showDeleteConfirmation(context);
+            }, 
+            icon: const Icon(Icons.delete_outlined, color: Colors.red,),
+            tooltip: 'Hapus Laporan',
+          ),
+          const SizedBox(width: 8,)
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
