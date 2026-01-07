@@ -145,7 +145,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
     } else {
 
       try {
-        await _activityController.submitActivity(title: widget.eventData.title, subtitle: widget.eventData.subtitle, description: widget.eventData.description, buttonText: widget.eventData.buttonText);
+        await _activityController.submitApplication(title: widget.eventData.title, subtitle: widget.eventData.subtitle, description: widget.eventData.description, headerImageUrl: widget.eventData.headerImageUrl, buttonText: widget.eventData.buttonText);
         message = "Permintaan '${widget.eventData.title}' Berhasil Diajukan!";
 
         if(mounted) {
