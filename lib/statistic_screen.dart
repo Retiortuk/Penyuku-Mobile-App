@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:penyuku/controllers/report_controller.dart';
 
 class StatistikScreen extends StatefulWidget {
   const StatistikScreen({super.key});
@@ -12,10 +13,47 @@ class StatistikScreen extends StatefulWidget {
 
 class _StatistikScreenState extends State<StatistikScreen> {
   final Color _darkBlue = const Color.fromARGB(255, 25, 44, 71);
-
-  final Color _redAccent = const Color(0xFFE74C3C);
-
   final Color _lightGreyBg = const Color(0xFFF7F8FA);
+
+  final ReportController _reportController =ReportController();
+  
+  int _totalTelur = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAllData();
+  }
+
+  Future<void> _fetchAllData() async {
+    try {
+      final data = await _reportController.getLaporan();
+
+      int totalEgg = 0;
+      for (var item in data) {
+        totalEgg += (item['egg_count'] as int? ?? 0);
+      }
+
+      setState(() {
+        _totalTelur = totalEgg;
+      });
+
+    } catch (e) {
+      if(mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Gagal Mengambil Data: Error: ${e.toString()}"),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ), 
+          )
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +279,7 @@ class _StatistikScreenState extends State<StatistikScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              "342",
+              _totalTelur.toString(),
               style: GoogleFonts.poppins(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
@@ -251,21 +289,12 @@ class _StatistikScreenState extends State<StatistikScreen> {
             const SizedBox(height: 12),
             Row(
               children: [
-                Icon(Icons.arrow_downward_rounded, color: _redAccent, size: 16),
                 const SizedBox(width: 4),
-                Text(
-                  "46,76%",
-                  style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: _redAccent,
-                  ),
-                ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              "Periode 30 hari terakhir",
+              "Telur Saat ini Berdasarkan Laporan",
               style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
             ),
           ],
