@@ -398,7 +398,6 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
   Widget _buildChatTab() {
     return Column(
       children: [
-        // 1. Header Chat
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -418,10 +417,9 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
           ),
         ),
 
-        // 2. Chat Area (Stream Builder)
         Expanded(
           child: Container(
-            color: const Color(0xFFF5F5F5), // Background abu muda
+            color: const Color(0xFFF5F5F5), 
             child: StreamBuilder<List<Map<String, dynamic>>>(
               stream: _chatController.getMessageStream(),
               builder: (context, snapshot) {
@@ -434,10 +432,8 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
                   return Center(child: Text("Belum ada obrolan. Mulai sapa!", style: GoogleFonts.poppins(color: Colors.grey)));
                 }
 
-                // Otomatis scroll ke bawah saat pertama kali load
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (_scrollController.hasClients && _scrollController.position.atEdge) {
-                     // Logic optional: hanya scroll jika user sudah di paling bawah
                   }
                 });
 
@@ -456,7 +452,6 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
           ),
         ),
 
-        // 3. Input Chat
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5, offset: const Offset(0, -2))]),
@@ -476,7 +471,7 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.only(bottom: 8),
                     ),
-                    onSubmitted: (_) => _sendMessage(), // Kirim saat tekan Enter di keyboard
+                    onSubmitted: (_) => _sendMessage(), 
                   ),
                 ),
               ),
@@ -496,7 +491,6 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
     );
   }
 
-  // Widget Bubble Chat
   Widget _buildChatBubble(String message, String sender, bool isMe) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -506,14 +500,12 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
         child: Column(
           crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            // Nama Pengirim (Hanya jika bukan saya)
             if (!isMe)
               Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 4),
                 child: Text(sender.split('@')[0], style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey[600], fontWeight: FontWeight.bold)),
               ),
             
-            // Bubble Isi Pesan
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
@@ -521,8 +513,8 @@ class _KomunitasScreenState extends State<KomunitasScreen> with SingleTickerProv
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(16),
                   topRight: const Radius.circular(16),
-                  bottomLeft: isMe ? const Radius.circular(16) : Radius.zero, // Lancip di kiri bawah jika orang lain
-                  bottomRight: isMe ? Radius.zero : const Radius.circular(16), // Lancip di kanan bawah jika saya
+                  bottomLeft: isMe ? const Radius.circular(16) : Radius.zero, 
+                  bottomRight: isMe ? Radius.zero : const Radius.circular(16),
                 ),
                 boxShadow: [
                   if (!isMe) BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 2, offset: const Offset(0, 1))

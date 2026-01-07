@@ -141,16 +141,6 @@ class ActivityController {
 
   Future<void> approveSubmission(Map<String, dynamic> submissionData) async {
     try {
-      // final activityData = {
-      //   'title': submissionData['title'],
-      //   'subtitle': submissionData['subtitle'],
-      //   'description': submissionData['description'],
-      //   'thumbnail_url': submissionData['thumbnail_url'],
-      //   'gallery_urls': submissionData['gallery_urls'],
-      //   'button_text': submissionData['button_text'],
-      // };
-
-      // await _supabase.from('activities').insert(activityData);
 
 
       await _supabase.from('submissions').delete().eq('id', submissionData['id']);
