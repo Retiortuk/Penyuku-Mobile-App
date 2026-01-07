@@ -133,7 +133,7 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
             ),
           );
           
-          Navigator.pop(context, true); 
+          Navigator.pop(context); 
         }
         return; 
 
@@ -143,17 +143,26 @@ class _EventOverviewScreenState extends State<EventOverviewScreen> {
       }
 
     } else {
-      message = "Permintaan '${widget.eventData.buttonText}' Berhasil Diajukan!";
-    }
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message, style: GoogleFonts.poppins(color: Colors.white)),
-          backgroundColor: snackBarColor,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      try {
+        await _activityController.submitActivity(title: widget.eventData.title, subtitle: widget.eventData.subtitle, description: widget.eventData.description, buttonText: widget.eventData.buttonText);
+        message = "Permintaan '${widget.eventData.title}' Berhasil Diajukan!";
+
+        if(mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message, style: GoogleFonts.poppins(color: Colors.white),),
+              backgroundColor: snackBarColor,
+              behavior: SnackBarBehavior.floating,
+            )
+          );
+          Navigator.pop(context, true);
+        }
+        return;
+      } catch (e) {
+        message = "Gagal menghapus: $e";
+        snackBarColor = Colors.red;
+      }
     }
   }
 

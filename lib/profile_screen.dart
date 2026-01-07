@@ -189,8 +189,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildTentangSaya() {
-    const String aboutText =
-        "Saya adalah Kevin, seorang penangkar penyu yang berdomisili di Cilacap. Sejak lama saya memiliki kecintaan terhadap laut dan satwa yang hidup di dalamnya, terutama penyu yang kini semakin langka. Dari rasa peduli itu, saya memutuskan\n \nuntuk mendirikan penangkaran penyu dengan tujuan melestarikan spesies ini sekaligus memberikan edukasi kepada masyarakat tentang pentingnya menjaga ekosistem laut. Setiap hari saya merawat telur, mengawasi proses penetasan, hingga melepaskan tukik ke laut lepas.";
+    String aboutText =
+        "Saya adalah ${_userData?['name']}, seorang penangkar penyu yang berdomisili di Cilacap. Sejak lama saya memiliki kecintaan terhadap laut dan satwa yang hidup di dalamnya, terutama penyu yang kini semakin langka. Dari rasa peduli itu, saya memutuskan\n \nuntuk mendirikan penangkaran penyu dengan tujuan melestarikan spesies ini sekaligus memberikan edukasi kepada masyarakat tentang pentingnya menjaga ekosistem laut. Setiap hari saya merawat telur, mengawasi proses penetasan, hingga melepaskan tukik ke laut lepas.";
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),

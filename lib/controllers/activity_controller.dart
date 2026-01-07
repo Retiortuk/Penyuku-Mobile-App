@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ActivityController {
@@ -81,6 +83,79 @@ class ActivityController {
     
     } catch (e) {
       throw "Gagal menghapus aktivitas: $e";
+    }
+  }
+
+  Future<void> submitApplication({
+    required String title,
+    required String subtitle,
+    required String description,
+    required String headerImageUrl,
+    required String buttonText,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? userSession = prefs.getString('user_session');
+      
+      String userEmail = "Guest"; 
+      
+      if (userSession != null) {
+        final userData = jsonDecode(userSession);
+        userEmail = userData['email'] ?? userData['username'] ?? "Unknown User";
+      }
+
+      await _supabase.from('submissions').insert({
+        'title': title,
+        'subtitle': subtitle,
+        'description': description,
+        'thumbnail_url': headerImageUrl, 
+        'button_text': buttonText,
+        'submitter_email': userEmail, 
+        'created_at': DateTime.now().toIso8601String(),
+      });
+
+    } catch (e) {
+      throw "Gagal mengirim pengajuan: $e";
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getSubmissions() async {
+    try {
+      final response = await _supabase
+          .from('submissions')
+          .select()
+          .order('created_at', ascending: false);
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      throw "Gagal mengambil pengajuan: $e";
+    }
+  }
+
+  Future<void> rejectSubmission(String id) async {
+    try {
+      await _supabase.from('submissions').delete().eq('id', id);
+    } catch (e) {
+      throw "Gagal menolak pengajuan: $e";
+    }
+  }
+
+  Future<void> approveSubmission(Map<String, dynamic> submissionData) async {
+    try {
+      final activityData = {
+        'title': submissionData['title'],
+        'subtitle': submissionData['subtitle'],
+        'description': submissionData['description'],
+        'thumbnail_url': submissionData['thumbnail_url'],
+        'gallery_urls': submissionData['gallery_urls'],
+        'button_text': submissionData['button_text'],
+      };
+
+      await _supabase.from('activities').insert(activityData);
+
+      await _supabase.from('submissions').delete().eq('id', submissionData['id']);
+      
+    } catch (e) {
+      throw "Gagal menyetujui pengajuan: $e";
     }
   }
 
