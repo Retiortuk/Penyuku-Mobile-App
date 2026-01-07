@@ -98,9 +98,7 @@ class AuthController {
   }
 
   // Forget Password
-  // Kirim OTP
   Future<void> sendRecoveryEmail(String email) async {
-    // A. Cek apakah email terdaftar di database kita
     final userCheck = await _supabase
         .from('users')
         .select()
